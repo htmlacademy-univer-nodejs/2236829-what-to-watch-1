@@ -1,3 +1,3 @@
-title	description	publicationDate	genre	releaseYear	videoPreviewUri	videoUri	cast	producer	duration	userId	posterUri	backgroundImageUri	backgroundColor
-XX	dddddddddddddddddddd	26.09.2022	comedy	2022	https://youtu.be/dQw4w9WgXcQ	https://youtu.be/dQw4w9WgXcQ	Rock,Rill	pr	212	0	https://assets.htmlacademy.ru/img/unknown-raccoon.v4.svg	https://assets.htmlacademy.ru/img/unknown-raccoon.v4.svg	#000000
-YY	dddddddddddddddddddd	26.09.2022	comedy	2022	https://youtu.be/dQw4w9WgXcQ	https://youtu.be/dQw4w9WgXcQ	Rock,Rill	pr	212	0	https://assets.htmlacademy.ru/img/unknown-raccoon.v4.svg	https://assets.htmlacademy.ru/img/unknown-raccoon.v4.svg	#000000
+title	description	publicationDate	genre	releaseYear	rating	videoPreviewUri	videoUri	cast	producer	duration	commentAmount	userId	posterUri	backgroundImageUri	backgroundColor
+XX	dddddddddddddddddddd	26.09.2022	comedy	2022	0	https://youtu.be/dQw4w9WgXcQ	https://youtu.be/dQw4w9WgXcQ	Rock,Rill	pr	212	0	0	https://assets.htmlacademy.ru/img/unknown-raccoon.v4.svg	https://assets.htmlacademy.ru/img/unknown-raccoon.v4.svg	#000000
+YY	dddddddddddddddddddd	26.09.2022	comedy	2022	0	https://youtu.be/dQw4w9WgXcQ	https://youtu.be/dQw4w9WgXcQ	Rock,Rill	pr	212	0	0	https://assets.htmlacademy.ru/img/unknown-raccoon.v4.svg	https://assets.htmlacademy.ru/img/unknown-raccoon.v4.svg	#000000

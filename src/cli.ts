@@ -8,9 +8,9 @@ import VersionCommand from './cli-command/version-command.js';
 const myManager = new CLIApplication();
 
 myManager.registerCommands([
-    new ImportCommand(),
-    new HelpCommand(),
-    new VersionCommand(),
+  new ImportCommand(),
+  new HelpCommand(),
+  new VersionCommand(),
 ]);
 
 myManager.processCommand(process.argv);

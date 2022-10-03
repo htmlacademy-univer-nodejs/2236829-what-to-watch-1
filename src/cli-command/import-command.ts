@@ -18,4 +18,4 @@ export default class ImportCommand implements CliCommandInterface {
             console.log(`Не удалось импортировать данные из файла «${filename}» по причине: «${err.message}»`);
         }
     }
-}
+};

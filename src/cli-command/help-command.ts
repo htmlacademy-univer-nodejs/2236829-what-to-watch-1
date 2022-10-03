@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { CliCommandInterface } from './cli-command.interface.js';
 
 export default class HelpCommand implements CliCommandInterface {
@@ -9,10 +10,10 @@ export default class HelpCommand implements CliCommandInterface {
             Пример:
                 main.js --<command> [--arguments]
             Команды:
-                --version:                   # выводит номер версии
-                --help:                      # печатает этот текст
-                --import <path>:             # импортирует данные из TSV
-                --generator <n> <path> <url> # генерирует произвольное количество тестовых данных
+                ${chalk.yellow('--version:')}                   ${chalk.blue('# выводит номер версии')}
+                ${chalk.yellow('--help:')}                      ${chalk.blue('# печатает этот текст')}
+                ${chalk.yellow('--import <path>:')}             ${chalk.blue('# импортирует данные из TSV')}
+                ${chalk.yellow('--generator <n> <path> <url>')} ${chalk.blue('# генерирует произвольное количество тестовых данных')}
             `);
     }
 };

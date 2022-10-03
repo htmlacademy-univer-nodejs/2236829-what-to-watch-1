@@ -19,4 +19,4 @@ export default class ImportCommand implements CliCommandInterface {
       console.log(chalk.red(`Не удалось импортировать данные из файла «${filename}» по причине: «${err.message}»`));
     }
   }
-};
+}

@@ -15,4 +15,4 @@ export default class VersionCommand implements CliCommandInterface {
     const version = this.readVersion();
     console.log(chalk.blue(version));
   }
-};
+}

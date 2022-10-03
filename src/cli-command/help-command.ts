@@ -16,4 +16,4 @@ export default class HelpCommand implements CliCommandInterface {
         ${chalk.yellow('--generator <n> <path> <url>')} ${chalk.blue('# генерирует произвольное количество тестовых данных')}
       `);
   }
-};
+}

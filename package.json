@@ -23,6 +23,7 @@
     "@typescript-eslint/parser": "^5.18.0",
     "eslint": "^8.12.0",
     "eslint-config-htmlacademy": "^5.1.2",
+    "got": "12.5.1",
     "json-server": "0.17.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.7.0",

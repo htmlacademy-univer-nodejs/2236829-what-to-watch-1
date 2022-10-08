@@ -1,109 +1,111 @@
 {
+  "api": {
     "title": ["AA", "BB", "CC", "DD", "EE"],
     "description": [
-        "aaaaaaaaaaaaaaaaaaaa",
-        "bbbbbbbbbbbbbbbbbbbb",
-        "cccccccccccccccccccc",
-        "dddddddddddddddddddd",
-        "eeeeeeeeeeeeeeeeeeee"
+      "aaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbb",
+      "cccccccccccccccccccc",
+      "dddddddddddddddddddd",
+      "eeeeeeeeeeeeeeeeeeee"
     ],
     "publicationDate": [
-        "01.01.2000",
-        "02.01.2000",
-        "03.01.2000",
-        "04.01.2000",
-        "05.01.2000"
+      "01.01.2000",
+      "02.01.2000",
+      "03.01.2000",
+      "04.01.2000",
+      "05.01.2000"
     ],
     "genre": [
-        "comedy",
-        "crime",
-        "documentary",
-        "drama",
-        "horror",
-        "family",
-        "romance",
-        "scifi",
-        "thriller"
+      "comedy",
+      "crime",
+      "documentary",
+      "drama",
+      "horror",
+      "family",
+      "romance",
+      "scifi",
+      "thriller"
     ],
     "releaseYear": [1999, 2000, 2001, 2002, 2003],
     "rating": [0, 1, 2, 3, 4],
     "videoPreviewUri": [
-        "https://youtu.be/PREVIEWaaaa",
-        "https://youtu.be/PREVIEWbbbb",
-        "https://youtu.be/PREVIEWcccc",
-        "https://youtu.be/PREVIEWdddd",
-        "https://youtu.be/PREVIEWeeee"
+      "https://youtu.be/PREVIEWaaaa",
+      "https://youtu.be/PREVIEWbbbb",
+      "https://youtu.be/PREVIEWcccc",
+      "https://youtu.be/PREVIEWdddd",
+      "https://youtu.be/PREVIEWeeee"
     ],
     "videoUri": [
-        "https://youtu.be/aaaaaaaaaaa",
-        "https://youtu.be/bbbbbbbbbbb",
-        "https://youtu.be/ccccccccccc",
-        "https://youtu.be/ddddddddddd",
-        "https://youtu.be/eeeeeeeeeee"
+      "https://youtu.be/aaaaaaaaaaa",
+      "https://youtu.be/bbbbbbbbbbb",
+      "https://youtu.be/ccccccccccc",
+      "https://youtu.be/ddddddddddd",
+      "https://youtu.be/eeeeeeeeeee"
     ],
     "cast": [
-        "Andrew",
-        "Boris",
-        "Cthulhu",
-        "Deniska",
-        "E"
+      "Andrew",
+      "Boris",
+      "Cthulhu",
+      "Deniska",
+      "E"
     ],
     "producer": [
-        "Andrew the producer",
-        "Boris the producer",
-        "Cthulhu the producer",
-        "Deniska the producer",
-        "E the producer"
+      "Andrew the producer",
+      "Boris the producer",
+      "Cthulhu the producer",
+      "Deniska the producer",
+      "E the producer"
     ],
     "duration": [1, 10, 100, 1000, 10000],
     "commentAmount": [0, 1, 2, 3, 4],
     "userName": [
-        "anton91",
-        "blin92",
-        "cent93",
-        "don94",
-        "error95"
+      "anton91",
+      "blin92",
+      "cent93",
+      "don94",
+      "error95"
     ],
     "userAvatarUri": [
-        "avatars.su/abc0",
-        "avatars.su/bcd1",
-        "avatars.su/cde2",
-        "avatars.su/efg3",
-        "avatars.su/fgh4"
+      "avatars.su/abc0",
+      "avatars.su/bcd1",
+      "avatars.su/cde2",
+      "avatars.su/efg3",
+      "avatars.su/fgh4"
     ],
     "userEmail": [
-        "anton91@pochta.ru",
-        "blin92@pochta.ru",
-        "cent93@pochta.ru",
-        "don94@pochta.ru",
-        "error95@pochta.ru"
+      "anton91@pochta.ru",
+      "blin92@pochta.ru",
+      "cent93@pochta.ru",
+      "don94@pochta.ru",
+      "error95@pochta.ru"
     ],
     "userPassword": [
-        "000000",
-        "111111",
-        "222222",
-        "333333",
-        "444444"
+      "000000",
+      "111111",
+      "222222",
+      "333333",
+      "444444"
     ],
     "posterUri": [
-        "posters.party/abc0",
-        "posters.party/bcd1",
-        "posters.party/cde2",
-        "posters.party/efg3",
-        "posters.party/fgh4"
+      "posters.party/abc0",
+      "posters.party/bcd1",
+      "posters.party/cde2",
+      "posters.party/efg3",
+      "posters.party/fgh4"
     ],
     "backgroundImageUri": [
-        "idk.uk/abc0",
-        "idk.uk/bcd1",
-        "idk.uk/cde2",
-        "idk.uk/efg3",
-        "idk.uk/fgh4"
+      "idk.uk/abc0",
+      "idk.uk/bcd1",
+      "idk.uk/cde2",
+      "idk.uk/efg3",
+      "idk.uk/fgh4"
     ],
     "backgroundColor": [
-        "#000000",
-        "#111111",
-        "#222222",
-        "#333333",
-        "#444444"
+      "#000000",
+      "#111111",
+      "#222222",
+      "#333333",
+      "#444444"
     ]
+  }
 }

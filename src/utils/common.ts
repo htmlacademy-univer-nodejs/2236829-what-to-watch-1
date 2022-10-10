@@ -1,5 +1,5 @@
-import { isGenre } from "../types/genre.type.js";
-import { Movie } from "../types/movie.type.js";
+import { isGenre } from '../types/genre.type.js';
+import { Movie } from '../types/movie.type.js';
 
 export function createMovie(str: string): Movie {
   const [

@@ -1,7 +1,7 @@
 import { appendFile } from 'fs/promises';
 import chalk from 'chalk';
 import got from 'got';
-import MovieGenerator from '../common/offer-generator/movie-generator.js';
+import MovieGenerator from '../common/movie-generator/movie-generator.js';
 import { MockData } from '../types/mock-data.type.js';
 import { CliCommandInterface } from './cli-command.interface.js';
 

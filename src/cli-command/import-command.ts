@@ -24,8 +24,8 @@ export default class ImportCommand implements CliCommandInterface {
   private onLine(line: string) {
     line = line.trim();
     if (line.length !== 0){
-      const offer = createMovie(line);
-      console.log(offer);
+      const movie = createMovie(line);
+      console.log(movie);
     }
   }
 

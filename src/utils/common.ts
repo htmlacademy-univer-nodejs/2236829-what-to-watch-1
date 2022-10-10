@@ -41,7 +41,7 @@ export function createMovie(str: string): Movie {
     rating: parseFloat(rating),
     videoPreviewUri,
     videoUri,
-    cast: cast.split(';'),
+    cast: cast.split(','),
     producer,
     duration: parseInt(duration, 10),
     commentAmount: parseInt(commentAmount, 10),

@@ -3,5 +3,5 @@ const GENRES = ['comedy', 'crime', 'documentary', 'drama', 'horror', 'family', '
 export type Genre = typeof GENRES[number];
 
 export function isGenre(genre: string): genre is Genre {
-  return GENRES.some((g) => g === genre);
+  return GENRES.includes(genre as Genre);
 }

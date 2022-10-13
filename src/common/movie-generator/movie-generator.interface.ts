@@ -1,3 +1,3 @@
-export default interface MovieGeneratorInterface {
+export interface MovieGeneratorInterface {
   generate(): string;
 }

@@ -1,6 +1,6 @@
 import { MockData } from '../../types/mock-data.type.js';
 import { getRandomItem, getRandomSlice } from '../../utils/random.js';
-import MovieGeneratorInterface from './movie-generator.interface.js';
+import { MovieGeneratorInterface } from './movie-generator.interface.js';
 
 export default class MovieGenerator implements MovieGeneratorInterface {
   constructor(private readonly mockData: MockData) {}

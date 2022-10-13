@@ -1,0 +1,111 @@
+{
+  "api": {
+    "titles": ["AA", "BB", "CC", "DD", "EE"],
+    "descriptions": [
+      "aaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbb",
+      "cccccccccccccccccccc",
+      "dddddddddddddddddddd",
+      "eeeeeeeeeeeeeeeeeeee"
+    ],
+    "publicationDates": [
+      "01.01.2000",
+      "02.01.2000",
+      "03.01.2000",
+      "04.01.2000",
+      "05.01.2000"
+    ],
+    "genres": [
+      "comedy",
+      "crime",
+      "documentary",
+      "drama",
+      "horror",
+      "family",
+      "romance",
+      "scifi",
+      "thriller"
+    ],
+    "releaseYears": [1999, 2000, 2001, 2002, 2003],
+    "ratings": [0, 1, 2, 3, 4],
+    "videoPreviewUris": [
+      "https://youtu.be/PREVIEWaaaa",
+      "https://youtu.be/PREVIEWbbbb",
+      "https://youtu.be/PREVIEWcccc",
+      "https://youtu.be/PREVIEWdddd",
+      "https://youtu.be/PREVIEWeeee"
+    ],
+    "videoUris": [
+      "https://youtu.be/aaaaaaaaaaa",
+      "https://youtu.be/bbbbbbbbbbb",
+      "https://youtu.be/ccccccccccc",
+      "https://youtu.be/ddddddddddd",
+      "https://youtu.be/eeeeeeeeeee"
+    ],
+    "casts": [
+      "Andrew",
+      "Boris",
+      "Cthulhu",
+      "Deniska",
+      "E"
+    ],
+    "producers": [
+      "Andrew the producer",
+      "Boris the producer",
+      "Cthulhu the producer",
+      "Deniska the producer",
+      "E the producer"
+    ],
+    "durations": [1, 10, 100, 1000, 10000],
+    "commentAmounts": [0, 1, 2, 3, 4],
+    "userNames": [
+      "anton91",
+      "blin92",
+      "cent93",
+      "don94",
+      "error95"
+    ],
+    "userAvatarUris": [
+      "https://avatars.su/abc0",
+      "https://avatars.su/bcd1",
+      "https://avatars.su/cde2",
+      "https://avatars.su/efg3",
+      "https://avatars.su/fgh4"
+    ],
+    "userEmails": [
+      "anton91@pochta.ru",
+      "blin92@pochta.ru",
+      "cent93@pochta.ru",
+      "don94@pochta.ru",
+      "error95@pochta.ru"
+    ],
+    "userPasswords": [
+      "000000",
+      "111111",
+      "222222",
+      "333333",
+      "444444"
+    ],
+    "posterUris": [
+      "https://posters.party/abc0",
+      "https://posters.party/bcd1",
+      "https://posters.party/cde2",
+      "https://posters.party/efg3",
+      "https://posters.party/fgh4"
+    ],
+    "backgroundImageUris": [
+      "https://idk.uk/abc0",
+      "https://idk.uk/bcd1",
+      "https://idk.uk/cde2",
+      "https://idk.uk/efg3",
+      "https://idk.uk/fgh4"
+    ],
+    "backgroundColors": [
+      "#000000",
+      "#111111",
+      "#222222",
+      "#333333",
+      "#444444"
+    ]
+  }
+}

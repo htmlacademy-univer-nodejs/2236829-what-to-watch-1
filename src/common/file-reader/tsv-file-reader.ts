@@ -1,75 +1,37 @@
-import { readFileSync } from 'fs';
-import { isGenre } from '../../types/genre.type.js';
-import { Movie } from '../../types/movie.type.js';
-import { FileReaderInterface } from './file-reader.interface.js';
+import EventEmitter from 'events';
+import { createReadStream } from 'fs';
+import { FileReaderInterface } from './file-reader.interface';
 
-export default class TSVFileReader implements FileReaderInterface {
-  private rawData = '';
-
-  constructor(public filename: string) {}
-
-  public read(): void {
-    this.rawData = readFileSync(this.filename, { encoding: 'utf8' });
+export default class TSVFileReader extends EventEmitter implements FileReaderInterface {
+  constructor(public filename: string) {
+    super();
   }
 
-  public toArray(): Movie[] {
-    if (!this.rawData) {
-      return [];
+  public async read(): Promise<void> {
+    const stream = createReadStream(this.filename, {
+      highWaterMark: 16 * 1024,
+      encoding: 'utf-8',
+    });
+
+    let lineRead = '';
+    let endLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of stream) {
+      lineRead += chunk.toString();
+
+      endLinePosition = lineRead.indexOf('\n');
+      while (endLinePosition >= 0) {
+        const completeRow = lineRead.slice(0, endLinePosition + 1);
+        endLinePosition++;
+        lineRead = lineRead.slice(endLinePosition);
+        importedRowCount++;
+        this.emit('line', completeRow);
+        endLinePosition = lineRead.indexOf('\n');
+      }
     }
 
-    return this.rawData
-      .split('\n')
-      .filter((row) => row.trim() !== '')
-      .map((line) => line.split('\t'))
-      .map(
-        ([
-          title,
-          description,
-          publicationDate,
-          genre,
-          releaseYear,
-          rating,
-          videoPreviewUri,
-          videoUri,
-          cast,
-          producer,
-          duration,
-          commentAmount,
-          userName,
-          userAvatarUri,
-          userEmail,
-          userPassword,
-          posterUri,
-          backgroundImageUri,
-          backgroundColor,
-        ]) => {
-          if (!isGenre(genre)) {
-            throw new Error('Параметр genre должен иметь тип Genre');
-          }
-          return {
-            title,
-            description,
-            publicationDate,
-            genre: genre,
-            releaseYear: parseInt(releaseYear, 10),
-            rating: parseFloat(rating),
-            videoPreviewUri,
-            videoUri,
-            cast: cast.split(';'),
-            producer,
-            duration: parseInt(duration, 10),
-            commentAmount: parseInt(commentAmount, 10),
-            user: {
-              name: userName,
-              avatarUri: userAvatarUri,
-              email: userEmail,
-              password: userPassword,
-            },
-            posterUri,
-            backgroundImageUri,
-            backgroundColor,
-          };
-        }
-      );
+    this.emit('line', lineRead);
+    this.emit('end', importedRowCount + 1);
   }
 }

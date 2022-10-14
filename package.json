@@ -19,6 +19,8 @@
     "mock-server": "json-server --watch mocks/mock-server-data.json"
   },
   "devDependencies": {
+    "@types/convict": "6.1.1",
+    "@types/convict-format-with-validator": "6.0.2",
     "@types/node": "^16.11.26",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
@@ -37,6 +39,8 @@
   },
   "dependencies": {
     "chalk": "5.0.1",
+    "convict": "6.2.3",
+    "convict-format-with-validator": "6.2.0",
     "dotenv": "16.0.3",
     "got": "12.5.1",
     "pino": "8.6.1"

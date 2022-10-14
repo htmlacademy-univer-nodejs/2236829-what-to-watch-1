@@ -1,22 +1,26 @@
 import { ConfigInterface } from './config.interface.js';
-import { config, DotenvParseOutput } from 'dotenv';
+import { config } from 'dotenv';
 import { LoggerInterface } from '../logger/logger.interface.js';
+import { configSchema, ConfigSchema } from './config.schema.js';
 
 export default class ConfigService implements ConfigInterface {
-  private config: DotenvParseOutput;
+  private config: ConfigSchema;
 
   constructor(private logger: LoggerInterface) {
     const parsedOutput = config();
 
     if (parsedOutput.error) {
-      throw new Error('Невозможно прочитать файл .env. Возможно, файл не существует.');
+      throw new Error('Не удаётся прочитать файл .env. Возможно, файл не существует.');
     }
-    
-    this.config = parsedOutput.parsed!;
+
+    configSchema.load({});
+    configSchema.validate({ allowed: 'strict', output: this.logger.info });
+
+    this.config = configSchema.getProperties();
     this.logger.info('Файл .env успешно прочитан.');
   }
 
-  public get(key: string): string | undefined {
+  public get<T extends keyof ConfigSchema>(key: T): ConfigSchema[T] {
     return this.config[key];
   }
 }

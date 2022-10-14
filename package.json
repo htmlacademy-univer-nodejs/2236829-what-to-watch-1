@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "chalk": "5.0.1",
+    "dotenv": "16.0.3",
     "got": "12.5.1",
     "pino": "8.6.1"
   }

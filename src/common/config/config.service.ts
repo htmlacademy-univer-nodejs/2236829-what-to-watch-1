@@ -10,9 +10,9 @@ export default class ConfigService implements ConfigInterface {
   private config: ConfigSchema;
 
   constructor(
-      @inject(Component.LoggerInterface)
-      private logger: LoggerInterface
-    ) {
+    @inject(Component.LoggerInterface)
+    private logger: LoggerInterface
+  ) {
     const parsedOutput = config();
 
     if (parsedOutput.error) {

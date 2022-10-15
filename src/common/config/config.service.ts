@@ -2,11 +2,17 @@ import { ConfigInterface } from './config.interface.js';
 import { config } from 'dotenv';
 import { LoggerInterface } from '../logger/logger.interface.js';
 import { configSchema, ConfigSchema } from './config.schema.js';
+import { inject, injectable } from 'inversify';
+import { Component } from '../../types/component.type.js';
 
+@injectable()
 export default class ConfigService implements ConfigInterface {
   private config: ConfigSchema;
 
-  constructor(private logger: LoggerInterface) {
+  constructor(
+      @inject(Component.LoggerInterface)
+      private logger: LoggerInterface
+    ) {
     const parsedOutput = config();
 
     if (parsedOutput.error) {

@@ -6,6 +6,15 @@ const { prop } = typegoose;
 export interface UserEntity extends defaultClasses.Base {}
 
 export class UserEntity extends defaultClasses.TimeStamps implements User {
+  constructor(data: User) {
+    super();
+
+    this.email = data.email;
+    this.avatarUri = data.avatarUri;
+    this.name = data.name;
+    this.password = data.password;
+  }
+
   @prop({
     unique: true,
     required: true,
@@ -13,17 +22,18 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   })
   public email!: string;
 
-  @prop()
-  public avatarUri!: string;
+  @prop({default: ''})
+  public avatarUri: string;
 
   @prop({
     required: true,
     minlength: 1,
-    maxlength: 15
+    maxlength: 15,
+    default: ''
   })
   public name!: string;
 
-  @prop({ required: true })
+  @prop({ required: true, default: '' })
   public password!: string;
 }
 

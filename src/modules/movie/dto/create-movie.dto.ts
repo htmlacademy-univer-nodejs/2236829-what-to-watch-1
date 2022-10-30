@@ -1,4 +1,4 @@
-import { Genre } from "../../../types/genre.type";
+import { Genre } from '../../../types/genre.type';
 
 export default class CreateMovieDto {
   public title!: string;

@@ -4,5 +4,5 @@ import { MovieEntity } from './movie.entity.js';
 
 export interface MovieServiceInterface {
   create(dto: CreateMovieDto, salt: string): Promise<DocumentType<MovieEntity>>;
-  findById(email: string): Promise<DocumentType<MovieEntity> | null>;
+  findById(id: string): Promise<DocumentType<MovieEntity> | null>;
 }

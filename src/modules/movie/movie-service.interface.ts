@@ -3,6 +3,6 @@ import CreateMovieDto from './dto/create-movie.dto.js';
 import { MovieEntity } from './movie.entity.js';
 
 export interface MovieServiceInterface {
-  create(dto: CreateMovieDto, salt: string): Promise<DocumentType<MovieEntity>>;
+  create(dto: CreateMovieDto): Promise<DocumentType<MovieEntity>>;
   findById(id: string): Promise<DocumentType<MovieEntity> | null>;
 }

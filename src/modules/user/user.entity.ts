@@ -28,7 +28,10 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
   })
   public email!: string;
 
-  @prop({default: ''})
+  @prop({
+    default: '',
+    match: /^\S+\.jpg$/
+  })
   public avatarUri: string;
 
   @prop({

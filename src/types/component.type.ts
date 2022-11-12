@@ -2,4 +2,9 @@ export const Component = {
   Application: Symbol.for('Application'),
   LoggerInterface: Symbol.for('LoggerInterface'),
   ConfigInterface: Symbol.for('ConfigInterface'),
+  DatabaseInterface: Symbol.for('DatabaseInterface'),
+  UserServiceInterface: Symbol.for('UserServiceInterface'),
+  MovieServiceInterface: Symbol.for('MovieServiceInterface'),
+  UserModel: Symbol.for('UserModel'),
+  MovieModel: Symbol.for('MovieModel'),
 } as const;

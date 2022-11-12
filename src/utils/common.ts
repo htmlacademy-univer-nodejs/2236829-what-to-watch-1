@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { isGenre } from '../types/genre.type.js';
 import { Movie } from '../types/movie.type.js';
 
@@ -56,3 +57,8 @@ export function createMovie(str: string): Movie {
     backgroundColor,
   };
 }
+
+export const createSHA256 = (line: string, salt: string): string => {
+  const shaHasher = crypto.createHmac('sha256', salt);
+  return shaHasher.update(line).digest('hex');
+};

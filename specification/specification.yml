@@ -1,0 +1,784 @@
+openapi: 3.0.3
+
+info:
+  title: API сервер для личного проекта «Что посмотреть»
+  description: Список ресурсов и маршрутов сервера «Что посмотреть»
+  version: 1.0.0
+
+tags:
+  - name: users
+    description: Действия с пользователем
+  - name: movies
+    description: Действия с фильмами
+  - name: comments
+    description: Действия с комментариями
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя
+
+      requestBody:
+        description: Информация для создания нового пользователя
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Успешно. Пользователь зарегистрирован. Объект пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь с таким email уже существует
+
+        "422":
+          description: Объект пользователя не прошёл валидацию
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе логина и пароля
+
+      requestBody:
+        required: true
+        description: Логин и пароль авторизующегося пользователя
+        content:
+          application/json:
+            schema:
+              type: object
+
+              properties:
+                login:
+                  type: string
+                  format: email
+                  example: some@mail.ru
+
+                password:
+                  type: string
+                  format: password
+                  example: somepass
+
+      responses:
+        "200":
+          description: Успешно. Пользователь зарегистрирован. Объект пользователя
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                description: Токен используемый для авторизации
+                example: SESSIONID=sessid; Path=/; HttpOnly
+
+        "401":
+          description: Неправильные пароль или логин
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию об авторизованном пользователе
+
+      parameters:
+        - in: cookie
+          name: SESSIONID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Успешно. Информация о пользователе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "403":
+          description: SESSIONID содержит неверный токен
+
+  /users/logout:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя
+
+      parameters:
+        - in: cookie
+          name: SESSIONID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "204":
+          description: Успешно. Пользователь деавторизован
+
+        "403":
+          description: SESSIONID содержит неверный токен
+
+  /movies:
+    post:
+      tags:
+        - movies
+      summary: Добавление нового фильма
+      description: Добавляет новый фильм
+
+      requestBody:
+        description: Информация для добавления нового фильма
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createMovie'
+        required: true
+
+      responses:
+        "201":
+          description: Успешно. Фильм добавлен. Объект фильма
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movie'
+
+        "422":
+          description: Объект фильма не прошёл валидацию
+
+
+  /movies/{movieId}:
+    get:
+      tags:
+        - movies
+      summary: Получение информации о фильме
+      description: Получает информацию о фильме
+
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Идентификатор фильма
+
+      responses:
+        "200":
+          description: Успешно. Информация о фильме
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movie'
+
+        "404":
+          description: Фильм с указанным идентификатором не существует
+
+    patch:
+      tags:
+        - movies
+      summary: Редактирование информации о фильме
+      description: Редактирует информацию о фильме
+
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Идентификатор фильма
+
+      requestBody:
+        description: Идентификатор фильма и подлежащая изменению информация о нём
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateMovie'
+        required: true
+
+      responses:
+        "200":
+          description: Успешно. Фильм обновлён. Объект фильма
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movie'
+
+        "404":
+          description: Фильм с указанным id не существует
+
+        "422":
+          description: Объект, описывающий изменения, производимые над объектом фильма, не прошёл валидацию
+
+    delete:
+      tags:
+        - movies
+      summary: Удаление информации о фильме
+      description: Удаляет информацию о фильме
+
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Идентификатор фильма
+
+      responses:
+        "204":
+          description: Успешно.
+
+        "404":
+          description: Фильм с указанным id не существует
+
+  /movies?limit=60&genre:
+    get:
+      tags:
+        - movies
+      summary: Получение списка фильмов
+      description: Получает список фильмов не больше указанного количества указанных жанров
+
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 0
+            example: 60
+
+        - in: query
+          name: genre
+          schema:
+            $ref: '#/components/schemas/genre'
+
+      responses:
+        "200":
+          description: Успешно. Список фильмов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/movieListItem'
+
+  /movies/promo:
+    get:
+      tags:
+        - movies
+      summary: Получение информации о промо-фильме
+      description: Получает информацию о промо-фильме
+
+      responses:
+        "200":
+          description: Успешно. Информация о промо-фильме
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movie'
+
+  /movies/to-watch:
+    get:
+      tags:
+        - movies
+      summary: Получение списка фильмов «К просмотру»
+      description: Получает список фильмов «К просмотру»
+
+      parameters:
+        - in: cookie
+          name: SESSIONID
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Успешно. Список фильмов «К просмотру»
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/movieListItem'
+
+        "403":
+          description: SESSIONID содержит неверный токен
+
+    post:
+      tags:
+        - movies
+      summary: Добавление фильма в список "К просмотру"
+      description: Добавляет фильм в список "К просмотру"
+
+      parameters:
+        - in: cookie
+          name: SESSIONID
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        description: Идентификатор фильма
+        content:
+          application/json:
+            schema:
+              type: object
+
+              properties:
+                movieId:
+                  type: string
+                  format: uuid
+                  example: 00000000-0000-0000-0000-000000000000
+
+              required:
+                - movieId
+
+      responses:
+        "201":
+          description: Успешно. Фильм добавлен в список "К просмотру"
+
+        "403":
+          description: SESSIONID содержит неверный токен
+
+  /movies/to-watch/{movieId}:
+    delete:
+      tags:
+        - movies
+      summary: Удаление фильма из списка "К просмотру"
+      description: Удаляет фильм из списка "К просмотру"
+
+      parameters:
+        - in: cookie
+          name: SESSIONID
+          required: true
+          schema:
+            type: string
+
+      requestBody:
+        description: Идентификатор фильма
+        content:
+          application/json:
+            schema:
+              type: object
+
+              properties:
+                movieId:
+                  type: string
+                  format: uuid
+                  example: 00000000-0000-0000-0000-000000000000
+
+              required:
+                - movieId
+
+      responses:
+        "204":
+          description: Успешно. Фильм удален из списка "К просмотру"
+
+        "403":
+          description: SESSIONID содержит неверный токен
+
+  /movies/{movieId}/comments:
+    get:
+      tags:
+        - comments
+      summary: Получение списка из 50 последних комментариев к заданному фильму
+      description: Получает список из 50 последних комментариев к заданному фильму
+
+      parameters:
+        - in: path
+          name: movieId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Идентификатор фильма
+
+      responses:
+        "200":
+          description: Успешно. Список комментариев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+
+        "404":
+          description: Фильм с указанным идентификатором не существует
+
+    post:
+      tags:
+        - comments
+      summary: Добавить новый комментарий к заданному фильму
+      description: Добавляет новый комментарий к заданному фильму
+
+      parameters:
+        - in: cookie
+          name: SESSIONID
+          required: true
+          schema:
+            type: string
+
+        - in: path
+          name: movieId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: Идентификатор фильма
+
+      requestBody:
+        description: Информация для добавления нового комментария
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment'
+
+      responses:
+        "200":
+          description: Успешно. Комментарий добавлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+
+        "403":
+          description: SESSIONID содержит неверный токен
+
+        "404":
+          description: Фильм с заданным идентификатором не существует
+
+        "422":
+          description: Объект комментария не прошёл валидацию
+
+components:
+  schemas:
+    genre:
+      type: string
+      enum:
+        [
+          comedy,
+          crime,
+          documentary,
+          drama,
+          horror,
+          family,
+          romance,
+          scifi,
+          thriller,
+        ]
+      example: thriller
+
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: some@mail.ru
+
+        name:
+          type: string
+          example: Name
+
+        password:
+          type: string
+          format: password
+          example: somepass
+
+        avatarUri:
+          type: string
+          format: url
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+
+        email:
+          type: string
+          example: some@mail.ru
+
+    createMovie:
+      type: object
+
+      properties:
+        title:
+          type: string
+          minLength: 2
+          maxLength: 100
+          example: Фильм
+
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: Описание
+
+        publicationDate:
+          type: string
+          format: date-time
+          example: 2033-11-22T11:22:33.000Z
+
+        genre:
+          $ref: '#/components/schemas/genre'
+
+        releaseYear:
+          type: integer
+          minimum: 0
+
+        videoPreviewUri:
+          type: string
+          format: url
+
+        videoUri:
+          type: string
+          format: url
+
+        cast:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          uniqueItems: true
+          example: ["Актёр", "Актьор"]
+
+        producer:
+          type: string
+          minLength: 2
+          maxLength: 50
+          example: Продюсер
+
+        duration:
+          type: number
+          minimum: 0
+
+        userId:
+          type: string
+          format: uuid
+
+        posterUri:
+          type: string
+          format: uri
+          pattern: ^\S+\.jpg$
+          example: example.jpg
+
+        backgroundImageUri:
+          type: string
+          format: uri
+          pattern: ^\S+\.jpg$
+          example: example.jpg
+
+        backgroundColor:
+          type: string
+          example: '#0000'
+
+      required:
+        - title
+        - description
+        - publicationDate
+        - genre
+        - releaseYear
+        - videoPreviewUri
+        - videoUri
+        - cast
+        - producer
+        - duration
+        - userId
+        - posterUri
+        - backgroundImageUri
+        - backgroundColor
+
+    movie:
+      type: object
+
+      properties:
+        title:
+          type: string
+          minLength: 2
+          maxLength: 100
+          example: Фильм
+
+        description:
+          type: string
+          minLength: 20
+          maxLength: 1024
+          example: Описание
+
+        publicationDate:
+          type: string
+          format: date-time
+          example: 2033-11-22T11:22:33.000Z
+
+        genre:
+          $ref: '#/components/schemas/genre'
+
+        releaseYear:
+          type: integer
+          minimum: 0
+
+        rating:
+          type: integer
+          minimum: 0
+          maximum: 10
+
+        videoPreviewUri:
+          type: string
+          format: url
+
+        videoUri:
+          type: string
+          format: url
+
+        cast:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          uniqueItems: true
+          example: ["Актёр", "Актьор"]
+
+        producer:
+          type: string
+          minLength: 2
+          maxLength: 50
+          example: Продюсер
+
+        duration:
+          type: number
+          minimum: 0
+
+        commentAmount:
+          type: integer
+          minimum: 0
+
+        user:
+          $ref: '#/components/schemas/user'
+
+        posterUri:
+          type: string
+          format: uri
+          pattern: ^\S+\.jpg$
+          example: example.jpg
+
+        backgroundImageUri:
+          type: string
+          format: uri
+          pattern: ^\S+\.jpg$
+          example: example.jpg
+
+        backgroundColor:
+          type: string
+          example: '#0000'
+
+      required:
+        - title
+        - description
+        - publicationDate
+        - genre
+        - releaseYear
+        - rating
+        - videoPreviewUri
+        - videoUri
+        - cast
+        - producer
+        - duration
+        - commentAmount
+        - user
+        - posterUri
+        - backgroundImageUri
+        - backgroundColor
+
+    updateMovie:
+      allOf:
+        - $ref: '#/components/schemas/createMovie'
+        - type: object
+          properties:
+            movieId:
+              type: string
+              format: uuid
+          required:
+            - movieId
+
+    movieListItem:
+      type: object
+
+      properties:
+        title:
+          type: string
+          minLength: 2
+          maxLength: 100
+          example: Фильм
+
+        publicationDate:
+          type: string
+          format: date-time
+          example: 2033-11-22T11:22:33.000Z
+
+        genre:
+          $ref: '#/components/schemas/genre'
+
+        videoPreviewUri:
+          type: string
+          format: url
+
+        user:
+          $ref: '#/components/schemas/user'
+
+        posterUri:
+          type: string
+          format: uri
+          pattern: ^\S+\.jpg$
+          example: example.jpg
+
+        commentAmount:
+          type: integer
+          minimum: 0
+
+      required:
+        - title
+        - publicationDate
+        - genre
+        - videoPreviewUri
+        - user
+        - posterUri
+        - commentAmount
+
+    comment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          minLength: 5
+          maxLength: 1024
+
+        rating:
+          type: integer
+          minimum: 0
+          maximum: 10
+
+        publicationDate:
+          type: string
+          format: date-time
+          example: 2033-11-22T11:22:33.000Z
+
+        user:
+          $ref: '#/components/schemas/user'
+
+      required:
+        - text
+        - rating
+        - user

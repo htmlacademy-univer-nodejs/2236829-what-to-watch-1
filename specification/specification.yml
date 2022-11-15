@@ -303,6 +303,35 @@ paths:
         "422":
           description: Запрошено невалидное количество фильмов или фильмы несуществующего жанра
 
+  /movies?limit=60:
+    get:
+      tags:
+        - movies
+      summary: Получение списка фильмов
+      description: Получает список фильмов не больше указанного количества всех жанров
+
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 0
+            example: 60
+          description: Максимальное требуемое количество вхождений в запрошенный список
+
+      responses:
+        "200":
+          description: Успешно. Список фильмов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/movieListItem'
+
+        "422":
+          description: Запрошено невалидное количество фильмов
+
   /movies/promo:
     get:
       tags:

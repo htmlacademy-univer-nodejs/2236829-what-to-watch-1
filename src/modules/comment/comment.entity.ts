@@ -31,7 +31,7 @@ export class CommentEntity extends defaultClasses.TimeStamps {
     ref: MovieEntity,
     required: true
   })
-  public filmId!: Ref<MovieEntity>;
+  public movieId!: Ref<MovieEntity>;
 }
 
 export const CommentModel = getModelForClass(CommentEntity);

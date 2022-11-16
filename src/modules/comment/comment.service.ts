@@ -4,15 +4,18 @@ import { CommentServiceInterface } from './comment-service.interface.js';
 import { Component } from '../../types/component.type.js';
 import { CommentEntity } from './comment.entity.js';
 import CreateCommentDto from './dto/create-comment.dto.js';
+import { MovieEntity } from '../movie/movie.entity.js';
 
 @injectable()
 export default class CommentService implements CommentServiceInterface {
   constructor(
-    @inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>
+    @inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>,
+    @inject(Component.MovieModel) private readonly movieModel: types.ModelType<MovieEntity>,
   ) {}
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create(dto);
+    await this.movieModel.findByIdAndUpdate(dto.movieId, {$inc: {ratingSum: dto.rating, commentAmount: 1}});
     return comment.populate('userId');
   }
 

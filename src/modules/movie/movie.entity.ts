@@ -48,7 +48,7 @@ export class MovieEntity extends defaultClasses.TimeStamps {
     required: true,
     default: 0
   })
-  public rating!: number;
+  public ratingSum!: number;
 
   @prop({ required: true })
   public videoPreviewUri!: string;

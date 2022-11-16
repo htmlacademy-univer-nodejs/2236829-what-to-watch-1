@@ -35,7 +35,7 @@ export default class MovieService implements MovieServiceInterface {
       return null;
     }
 
-    const result = await this.movieModel.replaceOne({_id: id}, dto);
+    const result = await this.movieModel.findOneAndReplace({_id: id}, dto, {new: true});
     this.logger.info(`Изменён фильм: ${movie.title} → ${dto.title}`);
 
     return result;
@@ -46,7 +46,7 @@ export default class MovieService implements MovieServiceInterface {
   }
 
   public async findById(id: string): Promise<DocumentType<MovieEntity> | null> {
-    return this.movieModel.findOne({_id: id});
+    return this.movieModel.findById(id);
   }
 
   public async getAll(limit : number | undefined): Promise<DocumentType<MovieEntity>[]> {

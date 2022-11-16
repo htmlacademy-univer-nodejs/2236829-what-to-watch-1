@@ -22,6 +22,23 @@ export default class MovieService implements MovieServiceInterface {
     return result;
   }
 
+  public async update(id: string, dto: CreateMovieDto): Promise<DocumentType<MovieEntity> | null> {
+    const movie = await this.findById(id);
+    if (!movie) {
+      this.logger.info(`Фильм не был изменён, так как не существует: ${dto.title}`);
+      return null;
+    }
+    if (movie.userId?.toString() !== dto.userId) {
+      this.logger.info(`Фильм не был изменён, так как не принадлежит пользователю: ${movie.title}, ${dto.userId}`);
+      return null;
+    }
+
+    const result = await this.movieModel.replaceOne({_id: id}, dto);
+    this.logger.info(`Изменён фильм: ${movie.title} → ${dto.title}`);
+
+    return result;
+  }
+
   public async findById(id: string): Promise<DocumentType<MovieEntity> | null> {
     return this.movieModel.findOne({_id: id});
   }

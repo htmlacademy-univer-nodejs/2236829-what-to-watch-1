@@ -41,12 +41,14 @@ export class MovieEntity extends defaultClasses.TimeStamps {
   })
   public genre!: Genre;
 
-  @prop({ required: true })
+  @prop({ required: true, min: 0 })
   public releaseYear!: number;
 
   @prop({
     required: true,
-    default: 0
+    default: 0,
+    min: 0,
+    max: 10
   })
   public ratingSum!: number;
 
@@ -71,12 +73,13 @@ export class MovieEntity extends defaultClasses.TimeStamps {
   })
   public producer!: string;
 
-  @prop({ required: true })
+  @prop({ required: true, min: 0 })
   public duration!: number;
 
   @prop({
     required: true,
-    default: 0
+    default: 0,
+    min: 0
   })
   public commentAmount!: number;
 

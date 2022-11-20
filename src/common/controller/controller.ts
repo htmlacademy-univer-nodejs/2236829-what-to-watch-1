@@ -33,8 +33,8 @@ export abstract class Controller implements ControllerInterface {
     this.send(res, StatusCodes.CREATED, data);
   }
 
-  public noContent<T>(res: Response, data: T): void {
-    this.send(res, StatusCodes.NO_CONTENT, data);
+  public noContent(res: Response): void {
+    res.status(StatusCodes.NO_CONTENT).send();
   }
 
   public ok<T>(res: Response, data: T): void {

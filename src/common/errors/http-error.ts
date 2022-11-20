@@ -5,6 +5,5 @@ export default class HttpError extends Error {
     public detail?: string
   ) {
     super(message);
-    this.message = message;
   }
 }

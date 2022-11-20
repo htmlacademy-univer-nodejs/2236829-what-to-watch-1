@@ -20,6 +20,8 @@ import { CommentServiceInterface } from './modules/comment/comment-service.inter
 import { Component } from './types/component.type.js';
 import MovieController from './modules/movie/movie.controller.js';
 import { ControllerInterface } from './common/controller/controller.interface.js';
+import ExceptionFilter from './common/errors/exception-filter.js';
+import { ExceptionFilterInterface } from './common/errors/exception-filter.interface.js';
 
 const applicationContainer = new Container();
 applicationContainer.bind<Application>(Component.Application).to(Application).inSingletonScope();
@@ -36,6 +38,8 @@ applicationContainer.bind<types.ModelType<MovieEntity>>(Component.MovieModel).to
 applicationContainer.bind<types.ModelType<CommentEntity>>(Component.CommentModel).toConstantValue(CommentModel);
 
 applicationContainer.bind<ControllerInterface>(Component.MovieController).to(MovieController).inSingletonScope();
+
+applicationContainer.bind<ExceptionFilterInterface>(Component.ExceptionFilterInterface).to(ExceptionFilter).inSingletonScope();
 
 const application = applicationContainer.get<Application>(Component.Application);
 await application.init();

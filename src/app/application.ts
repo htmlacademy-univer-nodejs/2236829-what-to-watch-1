@@ -7,6 +7,7 @@ import { Component } from '../types/component.type.js';
 import { getMongoDbURI } from '../utils/db.js';
 import { DatabaseInterface } from '../common/database-client/database.interface.js';
 import { ControllerInterface } from '../common/controller/controller.interface.js';
+import { ExceptionFilterInterface } from '../common/errors/exception-filter.interface.js';
 
 @injectable()
 export default class Application {
@@ -20,13 +21,19 @@ export default class Application {
     @inject(Component.DatabaseInterface)
     private databaseClient: DatabaseInterface,
     @inject(Component.MovieController)
-    private movieController: ControllerInterface
+    private movieController: ControllerInterface,
+    @inject(Component.ExceptionFilterInterface)
+    private exceptionFilter: ExceptionFilterInterface,
   ) {
     this.expressApp = express();
   }
 
   public initMiddleware() {
     this.expressApp.use(express.json());
+  }
+
+  public initExceptionFilters() {
+    this.expressApp.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
   }
 
   public initRoutes() {
@@ -50,6 +57,7 @@ export default class Application {
 
     this.initMiddleware();
     this.initRoutes();
+    this.initExceptionFilters();
     this.expressApp.listen(port);
     this.logger.info(`Сервер запущен на http://localhost:${port}`);
   }

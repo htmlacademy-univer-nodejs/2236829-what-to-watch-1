@@ -49,7 +49,7 @@ export default class MovieService implements MovieServiceInterface {
     return this.movieModel.findById(id);
   }
 
-  public async getAll(limit : number | undefined): Promise<DocumentType<MovieEntity>[]> {
+  public async getAll(limit? : number): Promise<DocumentType<MovieEntity>[]> {
     let query = this.movieModel.find().populate(['userId']);
     if (!isNullOrUndefined(limit)) {
       query = query.limit(limit);
@@ -57,7 +57,7 @@ export default class MovieService implements MovieServiceInterface {
     return query.exec();
   }
 
-  public async findByGenre(genre: Genre, limit : number | undefined): Promise<DocumentType<MovieEntity>[]> {
+  public async findByGenre(genre: Genre, limit? : number): Promise<DocumentType<MovieEntity>[]> {
     let query = this.movieModel.find({genre}).populate(['userId']);
     if (!isNullOrUndefined(limit)) {
       query = query.limit(limit);

@@ -10,7 +10,7 @@ import { DatabaseInterface } from '../common/database-client/database.interface.
 @injectable()
 export default class Application {
   private expressApp: Express;
-  
+
   constructor(
     @inject(Component.LoggerInterface)
     private logger: LoggerInterface,
@@ -24,7 +24,7 @@ export default class Application {
 
   public async init() {
     this.logger.info('Инициализация приложения…');
-    let port = this.config.get('PORT');
+    const port = this.config.get('PORT');
     this.logger.info(`Значение переменной $PORT: ${port}`);
 
     const uri = getMongoDbURI(

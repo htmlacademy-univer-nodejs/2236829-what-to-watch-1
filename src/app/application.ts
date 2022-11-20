@@ -6,6 +6,7 @@ import express, { Express } from 'express';
 import { Component } from '../types/component.type.js';
 import { getMongoDbURI } from '../utils/db.js';
 import { DatabaseInterface } from '../common/database-client/database.interface.js';
+import { ControllerInterface } from '../common/controller/controller.interface.js';
 
 @injectable()
 export default class Application {
@@ -17,9 +18,19 @@ export default class Application {
     @inject(Component.ConfigInterface)
     private config: ConfigInterface,
     @inject(Component.DatabaseInterface)
-    private databaseClient: DatabaseInterface
+    private databaseClient: DatabaseInterface,
+    @inject(Component.MovieController)
+    private movieController: ControllerInterface
   ) {
     this.expressApp = express();
+  }
+
+  public initMiddleware() {
+    this.expressApp.use(express.json());
+  }
+
+  public initRoutes() {
+    this.expressApp.use('/categories', this.movieController.router);
   }
 
   public async init() {
@@ -37,6 +48,8 @@ export default class Application {
 
     await this.databaseClient.connect(uri);
 
+    this.initMiddleware();
+    this.initRoutes();
     this.expressApp.listen(port);
     this.logger.info(`Сервер запущен на http://localhost:${port}`);
   }

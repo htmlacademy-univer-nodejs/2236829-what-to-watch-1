@@ -6,7 +6,7 @@ import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
 import { MovieServiceInterface } from './movie-service.interface.js';
 import MovieListItemDto from './dto/movie-list-item.dto.js';
-import { fillDTO } from '../../utils/common.js';
+import { fillDto } from '../../utils/common.js';
 import CreateMovieDto from './dto/create-movie.dto.js';
 import { Genre } from '../../types/genre.type.js';
 import MovieDto from './dto/movie.dto.js';
@@ -37,7 +37,7 @@ export default class MovieController extends Controller {
     const movies = req.query.genre
       ? await this.movieService.findByGenre(req.query.genre, req.query.limit)
       : await this.movieService.getAll(req.query.limit);
-    this.ok(res, fillDTO(MovieListItemDto, movies));
+    this.ok(res, fillDto(MovieListItemDto, movies));
   }
 
   public async getById(
@@ -45,7 +45,7 @@ export default class MovieController extends Controller {
     res: Response
   ): Promise<void> {
     const movie = await this.movieService.findById(req.params.id);
-    this.ok(res, fillDTO(MovieDto, movie));
+    this.ok(res, fillDto(MovieDto, movie));
   }
 
   public async create(
@@ -53,7 +53,7 @@ export default class MovieController extends Controller {
     res: Response
   ): Promise<void> {
     const result = await this.movieService.create(req.body);
-    this.created(res, fillDTO(MovieDto, result));
+    this.created(res, fillDto(MovieDto, result));
   }
 
   public async update(
@@ -61,7 +61,7 @@ export default class MovieController extends Controller {
     res: Response
   ): Promise<void> {
     const result = await this.movieService.update(req.params.id, req.body);
-    this.created(res, fillDTO(MovieDto, result));
+    this.created(res, fillDto(MovieDto, result));
   }
 
   public async deleteById(

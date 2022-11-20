@@ -7,8 +7,6 @@ export default class MovieDto {
   public publicationDate!: Date;
   public genre!: Genre;
   public releaseYear!: number;
-  @Transform(({obj}) => obj.ratingSum / obj.commentAmount)
-  public rating!: number;
   public videoPreviewUri!: string;
   public videoUri!: string;
   public cast!: string[];
@@ -18,4 +16,7 @@ export default class MovieDto {
   public posterUri!: string;
   public backgroundImageUri!: string;
   public backgroundColor!: string;
+
+  @Transform(({obj}) => obj.ratingSum / obj.commentAmount)
+  public rating!: number;
 }

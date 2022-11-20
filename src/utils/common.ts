@@ -65,5 +65,5 @@ export const createSHA256 = (line: string, salt: string): string => {
   return shaHasher.update(line).digest('hex');
 };
 
-export const fillDTO = <T, V>(someDto: ClassConstructor<T>, plainObject: V) =>
+export const fillDto = <T, V>(someDto: ClassConstructor<T>, plainObject: V) =>
   plainToInstance(someDto, plainObject, {excludeExtraneousValues: true});

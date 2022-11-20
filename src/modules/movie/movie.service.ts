@@ -5,6 +5,8 @@ import CreateMovieDto from './dto/create-movie.dto.js';
 import { MovieServiceInterface } from './movie-service.interface.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { Component } from '../../types/component.type.js';
+import { isNullOrUndefined } from '@typegoose/typegoose/lib/internal/utils.js';
+import { Genre } from '../../types/genre.type.js';
 
 @injectable()
 export default class MovieService implements MovieServiceInterface {
@@ -22,7 +24,44 @@ export default class MovieService implements MovieServiceInterface {
     return result;
   }
 
+  public async update(id: string, dto: CreateMovieDto): Promise<DocumentType<MovieEntity> | null> {
+    const movie = await this.findById(id);
+    if (!movie) {
+      this.logger.info(`Фильм не был изменён, так как не существует: ${dto.title}`);
+      return null;
+    }
+    if (movie.userId?.toString() !== dto.userId) {
+      this.logger.info(`Фильм не был изменён, так как не принадлежит пользователю: ${movie.title}, ${dto.userId}`);
+      return null;
+    }
+
+    const result = await this.movieModel.findOneAndReplace({_id: id}, dto, {new: true});
+    this.logger.info(`Изменён фильм: ${movie.title} → ${dto.title}`);
+
+    return result;
+  }
+
+  public async deleteById(id: string): Promise<boolean> {
+    return ((await this.movieModel.deleteOne({_id: id})).deletedCount ?? 0) > 0;
+  }
+
   public async findById(id: string): Promise<DocumentType<MovieEntity> | null> {
-    return this.movieModel.findOne({_id: id});
+    return this.movieModel.findById(id);
+  }
+
+  public async getAll(limit : number | undefined): Promise<DocumentType<MovieEntity>[]> {
+    let query = this.movieModel.find().populate(['userId']);
+    if (!isNullOrUndefined(limit)) {
+      query = query.limit(limit);
+    }
+    return query.exec();
+  }
+
+  public async findByGenre(genre: Genre, limit : number | undefined): Promise<DocumentType<MovieEntity>[]> {
+    let query = this.movieModel.find({genre}).populate(['userId']);
+    if (!isNullOrUndefined(limit)) {
+      query = query.limit(limit);
+    }
+    return query.exec();
   }
 }

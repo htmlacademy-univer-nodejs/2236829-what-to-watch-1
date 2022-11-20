@@ -1,3 +1,4 @@
+import asyncHandler from 'express-async-handler';
 import { injectable } from 'inversify';
 import { Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -19,7 +20,7 @@ export abstract class Controller implements ControllerInterface {
 
   public addRoute<P, ResBody, ReqBody, ReqQuery, Locals extends Record<string, any>>
     (route: RouteInterface<P, ResBody, ReqBody, ReqQuery, Locals>) {
-    this._router[route.method](route.path, route.handler.bind(this));
+    this._router[route.method](route.path, asyncHandler(route.handler.bind(this) as any)); //todo
     this.logger.info(`Добавлен обработчик запросов: ${route.method.toUpperCase()} ${route.path}`);
   }
 

@@ -1,6 +1,5 @@
-export default class CreateUserDto {
+export default class UserDto {
   public name!: string;
   public avatarUri!: string;
   public email!: string;
-  public password!: string;
 }

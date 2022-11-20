@@ -31,7 +31,7 @@ export default class MovieController extends Controller {
   }
 
   public async getAll(
-    req: Request<{}, {}, {}, {genre?: Genre, limit?: number}>,
+    req: Request<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, {genre?: Genre, limit?: number}>,
     res: Response
   ): Promise<void> {
     const movies = req.query.genre
@@ -49,7 +49,7 @@ export default class MovieController extends Controller {
   }
 
   public async create(
-    req: Request<{}, {}, CreateMovieDto>,
+    req: Request<Record<string, unknown>, Record<string, unknown>, CreateMovieDto>,
     res: Response
   ): Promise<void> {
     const result = await this.movieService.create(req.body);
@@ -57,7 +57,7 @@ export default class MovieController extends Controller {
   }
 
   public async update(
-    req: Request<{id: string}, {}, CreateMovieDto>,
+    req: Request<{id: string}, Record<string, unknown>, CreateMovieDto>,
     res: Response
   ): Promise<void> {
     const result = await this.movieService.update(req.params.id, req.body);

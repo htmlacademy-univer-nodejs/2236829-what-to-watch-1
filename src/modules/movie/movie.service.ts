@@ -57,7 +57,7 @@ export default class MovieService implements MovieServiceInterface {
     return query.exec();
   }
 
-  public async findByGenre(genre: Genre, limit? : number): Promise<DocumentType<MovieEntity>[]> {
+  public async findByGenre(genre: Genre, limit?: number): Promise<DocumentType<MovieEntity>[]> {
     let query = this.movieModel.find({genre}).populate(['userId']);
     if (!isNullOrUndefined(limit)) {
       query = query.limit(limit);

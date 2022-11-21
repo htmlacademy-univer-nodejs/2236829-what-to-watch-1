@@ -15,12 +15,12 @@ import { ConfigInterface } from '../../common/config/config.interface.js';
 @injectable()
 export default class MovieController extends Controller {
   constructor(
-    @inject(Component.LoggerInterface)
-    logger: LoggerInterface,
     @inject(Component.MovieServiceInterface)
     private readonly movieService: MovieServiceInterface,
     @inject(Component.ConfigInterface)
     private readonly configService: ConfigInterface,
+    @inject(Component.LoggerInterface)
+    logger: LoggerInterface,
   ) {
     super(logger);
 

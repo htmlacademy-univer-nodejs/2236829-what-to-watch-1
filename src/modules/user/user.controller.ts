@@ -16,12 +16,12 @@ import LoginUserDto from './dto/login-user.dto.js';
 @injectable()
 export default class UserController extends Controller {
   constructor(
-    @inject(Component.LoggerInterface)
-    logger: LoggerInterface,
     @inject(Component.UserServiceInterface)
     private readonly userService: UserServiceInterface,
     @inject(Component.ConfigInterface)
     private readonly configService: ConfigInterface,
+    @inject(Component.LoggerInterface)
+    logger: LoggerInterface,
   ) {
     super(logger);
     this.logger.info('Регистрация эндпоинтов для UserController…');

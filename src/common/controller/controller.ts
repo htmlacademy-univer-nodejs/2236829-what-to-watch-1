@@ -18,8 +18,9 @@ export abstract class Controller implements ControllerInterface {
     return this._router;
   }
 
-  public addRoute<P, ResBody, ReqBody, ReqQuery>
-    (route: RouteInterface<P, ResBody, ReqBody, ReqQuery, Record<string, any>>) {
+  public addRoute<P, ResBody, ReqBody, ReqQuery>(
+    route: RouteInterface<P, ResBody, ReqBody, ReqQuery, Record<string, unknown>>
+  ) {
     this._router[route.method](route.path, asyncHandler(route.handler.bind(this)));
     this.logger.info(`Добавлен обработчик запросов: ${route.method.toUpperCase()} ${route.path}`);
   }

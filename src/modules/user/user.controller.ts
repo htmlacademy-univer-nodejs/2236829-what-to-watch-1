@@ -55,8 +55,7 @@ export default class UserController extends Controller {
   }
 
   public async login(
-    req: Request<Record<string, unknown>, Record<string, unknown>, LoginUserDto>,
-    _res: Response,
+    req: Request<Record<string, unknown>, Record<string, unknown>, LoginUserDto>
   ): Promise<void> {
     const existsUser = await this.userService.findByEmail(req.body.email);
 
@@ -75,10 +74,7 @@ export default class UserController extends Controller {
     );
   }
 
-  public async getCurrentUser(
-    _req: Request<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>>,
-    _res: Response,
-  ): Promise<void> {
+  public async getCurrentUser(): Promise<void> {
     throw new HttpError(
       StatusCodes.NOT_IMPLEMENTED,
       'Метод не реализован',
@@ -86,10 +82,7 @@ export default class UserController extends Controller {
     );
   }
 
-  public async logout(
-    _req: Request<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>>,
-    _res: Response,
-  ): Promise<void> {
+  public async logout(): Promise<void> {
     throw new HttpError(
       StatusCodes.NOT_IMPLEMENTED,
       'Метод не реализован',

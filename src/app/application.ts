@@ -22,6 +22,8 @@ export default class Application {
     private databaseClient: DatabaseInterface,
     @inject(Component.MovieController)
     private movieController: ControllerInterface,
+    @inject(Component.UserController)
+    private userController: ControllerInterface,
     @inject(Component.ExceptionFilterInterface)
     private exceptionFilter: ExceptionFilterInterface,
   ) {
@@ -38,6 +40,7 @@ export default class Application {
 
   public initRoutes() {
     this.expressApp.use('/categories', this.movieController.router);
+    this.expressApp.use('/users', this.userController.router);
   }
 
   public async init() {

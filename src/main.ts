@@ -19,6 +19,7 @@ import { MovieServiceInterface } from './modules/movie/movie-service.interface.j
 import { CommentServiceInterface } from './modules/comment/comment-service.interface.js';
 import { Component } from './types/component.type.js';
 import MovieController from './modules/movie/movie.controller.js';
+import UserController from './modules/user/user.controller.js';
 import { ControllerInterface } from './common/controller/controller.interface.js';
 import ExceptionFilter from './common/errors/exception-filter.js';
 import { ExceptionFilterInterface } from './common/errors/exception-filter.interface.js';
@@ -38,6 +39,7 @@ applicationContainer.bind<types.ModelType<MovieEntity>>(Component.MovieModel).to
 applicationContainer.bind<types.ModelType<CommentEntity>>(Component.CommentModel).toConstantValue(CommentModel);
 
 applicationContainer.bind<ControllerInterface>(Component.MovieController).to(MovieController).inSingletonScope();
+applicationContainer.bind<ControllerInterface>(Component.UserController).to(UserController).inSingletonScope();
 
 applicationContainer.bind<ExceptionFilterInterface>(Component.ExceptionFilterInterface).to(ExceptionFilter).inSingletonScope();
 

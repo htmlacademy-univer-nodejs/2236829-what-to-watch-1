@@ -3,7 +3,9 @@ import { Response, Router } from 'express';
 
 export interface ControllerInterface {
   readonly router: Router;
-  addRoute(route: RouteInterface): void;
+  addRoute<P, ResBody, ReqBody, ReqQuery>(
+    route: RouteInterface<P, ResBody, ReqBody, ReqQuery, Record<string, unknown>>
+  ): void;
   send<T>(res: Response, statusCode: number, data: T): void;
   ok<T>(res: Response, data: T): void;
   created<T>(res: Response, data: T): void;

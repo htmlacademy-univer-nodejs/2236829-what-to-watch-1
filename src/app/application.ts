@@ -61,7 +61,6 @@ export default class Application {
     this.initMiddleware();
     this.initRoutes();
     this.initExceptionFilters();
-    this.expressApp.listen(port);
-    this.logger.info(`Сервер запущен на http://localhost:${port}`);
+    this.expressApp.listen(port, () => this.logger.info(`Сервер запущен на http://localhost:${port}`));
   }
 }

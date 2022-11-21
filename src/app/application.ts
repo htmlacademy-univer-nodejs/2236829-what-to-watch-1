@@ -39,7 +39,7 @@ export default class Application {
   }
 
   public initRoutes() {
-    this.expressApp.use('/categories', this.movieController.router);
+    this.expressApp.use('/movies', this.movieController.router);
     this.expressApp.use('/users', this.userController.router);
   }
 

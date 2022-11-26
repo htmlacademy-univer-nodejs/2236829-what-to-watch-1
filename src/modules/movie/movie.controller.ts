@@ -13,12 +13,17 @@ import MovieDto from './dto/movie.dto.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
 import HttpError from '../../common/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
+import CreateCommentDto from '../comment/dto/create-comment.dto.js';
+import CommentDto from '../comment/dto/comment.dto.js';
+import { CommentServiceInterface } from '../comment/comment-service.interface.js';
 
 @injectable()
 export default class MovieController extends Controller {
   constructor(
     @inject(Component.MovieServiceInterface)
     private readonly movieService: MovieServiceInterface,
+    @inject(Component.CommentServiceInterface)
+    private readonly commentService: CommentServiceInterface,
     @inject(Component.ConfigInterface)
     private readonly configService: ConfigInterface,
     @inject(Component.LoggerInterface)
@@ -34,6 +39,8 @@ export default class MovieController extends Controller {
     this.addRoute({path: '/to-watch', method: HttpMethod.Get, handler: this.getToWatchList});
     this.addRoute({path: '/to-watch', method: HttpMethod.Post, handler: this.addToToWatchList});
     this.addRoute({path: '/to-watch', method: HttpMethod.Delete, handler: this.deleteFromToWatchList});
+    this.addRoute({path: '/:id/comments', method: HttpMethod.Get, handler: this.getComments});
+    this.addRoute({path: '/:id/comments', method: HttpMethod.Post, handler: this.createComment});
     this.addRoute({path: '/:id', method: HttpMethod.Get, handler: this.getById});
     this.addRoute({path: '/:id', method: HttpMethod.Put, handler: this.update});
     this.addRoute({path: '/:id', method: HttpMethod.Delete, handler: this.deleteById});
@@ -111,5 +118,28 @@ export default class MovieController extends Controller {
       'Метод не реализован',
       'MovieController',
     );
+  }
+
+  public async getComments(
+    req: Request<{id: string}>,
+    res: Response
+  ): Promise<void> {
+    const comments = await this.commentService.findByMovieId(req.params.id);
+    this.ok(res, fillDto(CommentDto, comments));
+  }
+
+  public async createComment(
+    req: Request<{id: string}, Record<string, unknown>, CreateCommentDto>,
+    res: Response
+  ): Promise<void> {
+    const comment = await this.commentService.create(req.params.id, req.body);
+    if (!comment) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Фильм с идентификатором ${req.params.id} не существует.`,
+        'CommentController'
+      );
+    }
+    this.created(res, fillDto(CommentDto, comment));
   }
 }

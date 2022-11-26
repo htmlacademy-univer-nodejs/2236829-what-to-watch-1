@@ -15,12 +15,12 @@ export default class CommentService implements CommentServiceInterface {
     private readonly movieModel: types.ModelType<MovieEntity>,
   ) {}
 
-  public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity> | null> {
-    const movie = await this.movieModel.findByIdAndUpdate(dto.movieId, {$inc: {ratingSum: dto.rating, commentAmount: 1}});
+  public async create(movieId: string, dto: CreateCommentDto): Promise<DocumentType<CommentEntity> | null> {
+    const movie = await this.movieModel.findByIdAndUpdate(movieId, {$inc: {ratingSum: dto.rating, commentAmount: 1}});
     if (!movie) {
       return null;
     }
-    const comment = await this.commentModel.create(dto);
+    const comment = await this.commentModel.create({movieId, ...dto});
     return comment.populate('userId');
   }
 

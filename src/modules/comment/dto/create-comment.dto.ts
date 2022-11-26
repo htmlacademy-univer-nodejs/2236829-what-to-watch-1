@@ -3,5 +3,4 @@ export default class CreateCommentDto {
   public rating!: number;
   public date!: Date;
   public userId!: string;
-  public movieId!: string;
 }

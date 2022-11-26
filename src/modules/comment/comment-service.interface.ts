@@ -3,7 +3,7 @@ import { CommentEntity } from './comment.entity.js';
 import CreateCommentDto from './dto/create-comment.dto.js';
 
 export interface CommentServiceInterface {
-  create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity> | null>;
+  create(movieId: string, dto: CreateCommentDto): Promise<DocumentType<CommentEntity> | null>;
   findByMovieId(movieId: string): Promise<DocumentType<CommentEntity>[]>;
   deleteByMovieId(movieId: string): Promise<number>;
 }

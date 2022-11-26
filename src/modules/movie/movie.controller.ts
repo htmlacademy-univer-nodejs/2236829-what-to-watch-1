@@ -11,6 +11,8 @@ import CreateMovieDto from './dto/create-movie.dto.js';
 import { Genre } from '../../types/genre.type.js';
 import MovieDto from './dto/movie.dto.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
+import HttpError from '../../common/errors/http-error.js';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -29,6 +31,9 @@ export default class MovieController extends Controller {
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
     this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
+    this.addRoute({path: '/to-watch', method: HttpMethod.Get, handler: this.getToWatchList});
+    this.addRoute({path: '/to-watch', method: HttpMethod.Post, handler: this.addToToWatchList});
+    this.addRoute({path: '/to-watch', method: HttpMethod.Delete, handler: this.deleteFromToWatchList});
     this.addRoute({path: '/:id', method: HttpMethod.Get, handler: this.getById});
     this.addRoute({path: '/:id', method: HttpMethod.Put, handler: this.update});
     this.addRoute({path: '/:id', method: HttpMethod.Delete, handler: this.deleteById});
@@ -82,5 +87,29 @@ export default class MovieController extends Controller {
   ): Promise<void> {
     await this.movieService.deleteById(req.params.id);
     this.noContent(res);
+  }
+
+  public async getToWatchList(): Promise<void> {
+    throw new HttpError(
+      StatusCodes.NOT_IMPLEMENTED,
+      'Метод не реализован',
+      'MovieController',
+    );
+  }
+
+  public async addToToWatchList(): Promise<void> {
+    throw new HttpError(
+      StatusCodes.NOT_IMPLEMENTED,
+      'Метод не реализован',
+      'MovieController',
+    );
+  }
+
+  public async deleteFromToWatchList(): Promise<void> {
+    throw new HttpError(
+      StatusCodes.NOT_IMPLEMENTED,
+      'Метод не реализован',
+      'MovieController',
+    );
   }
 }

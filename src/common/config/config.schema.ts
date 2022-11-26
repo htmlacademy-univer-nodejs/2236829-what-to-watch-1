@@ -11,6 +11,7 @@ export type ConfigSchema = {
   DB_PASSWORD: string;
   DB_PORT: number;
   DB_NAME: string;
+  PROMO_MOVIE_ID: string;
 };
 
 export const configSchema = convict<ConfigSchema>({
@@ -55,5 +56,11 @@ export const configSchema = convict<ConfigSchema>({
     format: String,
     env: 'DB_NAME',
     default: 'course-nodejs-restapi'
-  }
+  },
+  PROMO_MOVIE_ID: {
+    doc: 'Id of promo movie',
+    format: String,
+    env: 'PROMO_MOVIE_ID',
+    default: null
+  },
 });

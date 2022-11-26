@@ -5,8 +5,13 @@ export const Component = {
   DatabaseInterface: Symbol.for('DatabaseInterface'),
   UserServiceInterface: Symbol.for('UserServiceInterface'),
   MovieServiceInterface: Symbol.for('MovieServiceInterface'),
+  ToWatchServiceInterface: Symbol.for('ToWatchServiceInterface'),
   UserModel: Symbol.for('UserModel'),
   MovieModel: Symbol.for('MovieModel'),
+  ToWatchModel: Symbol.for('ToWatchModel'),
   CommentModel: Symbol.for('CommentModel'),
   CommentServiceInterface: Symbol.for('CommentServiceInterface'),
+  UserController: Symbol.for('UserController'),
+  MovieController: Symbol.for('MovieController'),
+  ExceptionFilterInterface: Symbol.for('ExceptionFilterInterface'),
 } as const;

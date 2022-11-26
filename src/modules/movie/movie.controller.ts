@@ -27,9 +27,9 @@ export default class MovieController extends Controller {
     this.logger.info('Регистрация эндпоинтов для MovieController…');
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
+    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
     this.addRoute({path: '/:id', method: HttpMethod.Get, handler: this.getById});
-    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
     this.addRoute({path: '/:id', method: HttpMethod.Put, handler: this.update});
     this.addRoute({path: '/:id', method: HttpMethod.Delete, handler: this.deleteById});
   }

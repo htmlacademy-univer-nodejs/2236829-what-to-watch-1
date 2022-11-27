@@ -16,6 +16,7 @@ import { StatusCodes } from 'http-status-codes';
 import CreateCommentDto from '../comment/dto/create-comment.dto.js';
 import CommentDto from '../comment/dto/comment.dto.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
+import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -33,17 +34,48 @@ export default class MovieController extends Controller {
 
     this.logger.info('Регистрация эндпоинтов для MovieController…');
 
+    const validateObjectIdMiddleware = new ValidateObjectIdMiddleware('id');
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
     this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
     this.addRoute({path: '/to-watch', method: HttpMethod.Get, handler: this.getToWatchList});
     this.addRoute({path: '/to-watch', method: HttpMethod.Post, handler: this.addToToWatchList});
     this.addRoute({path: '/to-watch', method: HttpMethod.Delete, handler: this.deleteFromToWatchList});
-    this.addRoute({path: '/:id/comments', method: HttpMethod.Get, handler: this.getComments});
-    this.addRoute({path: '/:id/comments', method: HttpMethod.Post, handler: this.createComment});
-    this.addRoute({path: '/:id', method: HttpMethod.Get, handler: this.getById});
-    this.addRoute({path: '/:id', method: HttpMethod.Put, handler: this.update});
-    this.addRoute({path: '/:id', method: HttpMethod.Delete, handler: this.deleteById});
+
+    this.addRoute({
+      path: '/:id/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [validateObjectIdMiddleware]
+    });
+
+    this.addRoute({
+      path: '/:id/comments',
+      method: HttpMethod.Post,
+      handler: this.createComment,
+      middlewares: [validateObjectIdMiddleware]
+    });
+
+    this.addRoute({
+      path: '/:id',
+      method: HttpMethod.Get,
+      handler: this.getById,
+      middlewares: [validateObjectIdMiddleware]
+    });
+
+    this.addRoute({
+      path: '/:id',
+      method: HttpMethod.Put,
+      handler: this.update,
+      middlewares: [validateObjectIdMiddleware]
+    });
+
+    this.addRoute({
+      path: '/:id',
+      method: HttpMethod.Delete,
+      handler: this.deleteById,
+      middlewares: [validateObjectIdMiddleware]
+    });
   }
 
   public async getAll(

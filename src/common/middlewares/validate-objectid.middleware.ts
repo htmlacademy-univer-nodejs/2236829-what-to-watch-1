@@ -11,7 +11,7 @@ export class ValidateObjectIdMiddleware<IdParam extends string> implements
     MiddlewareInterface<Record<IdParam, string | number | ObjectId | ObjectIdLike | Buffer | Uint8Array>> {
   constructor(private param: IdParam) {}
 
-  public execute(req: Request<Record<IdParam, ObjectId>>, _res: Response, next: NextFunction): void {
+  public execute(req: Request<Record<IdParam, string | number | ObjectId | ObjectIdLike | Buffer | Uint8Array>>, _res: Response, next: NextFunction): void {
     const objectId = req.params[this.param];
 
     if (Types.ObjectId.isValid(objectId)) {

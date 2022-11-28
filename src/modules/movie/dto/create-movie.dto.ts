@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsIn, IsInt, IsMongoId, MaxLength, MinLength, IsNumber, Min } from 'class-validator';
+import { IsArray, IsDateString, IsIn, IsInt, IsMongoId, MaxLength, MinLength, IsNumber, Min, IsString } from 'class-validator';
 import { Genre, GENRES } from '../../../types/genre.type';
 
 export default class CreateMovieDto {
@@ -19,8 +19,10 @@ export default class CreateMovieDto {
   @IsInt({message: 'Поле releaseYear должно быть целым числом'})
   public releaseYear!: number;
 
+  @IsString({message: 'Поле videoPreviewUri должно быть строкой'})
   public videoPreviewUri!: string;
 
+  @IsString({message: 'Поле videoUri должно быть строкой'})
   public videoUri!: string;
 
   @IsArray({message: 'Поле cast должно быть массивом строк'})
@@ -34,12 +36,15 @@ export default class CreateMovieDto {
   @Min(0, {message: 'Значения поля duration не может быть меньше 0'})
   public duration!: number;
 
-  @IsMongoId({each: true, message: 'Поле userId должно быть корректным идентификатором'})
+  @IsMongoId({message: 'Поле userId должно быть корректным идентификатором'})
   public userId!: string;
 
+  @IsString({message: 'Поле posterUri должно быть строкой'})
   public posterUri!: string;
 
+  @IsString({message: 'Поле backgroundImageUri должно быть строкой'})
   public backgroundImageUri!: string;
 
+  @IsString({message: 'Поле backgroundColor должно быть строкой'})
   public backgroundColor!: string;
 }

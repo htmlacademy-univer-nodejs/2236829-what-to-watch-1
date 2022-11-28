@@ -1,4 +1,4 @@
-import { IsEmail, MaxLength, MinLength } from "class-validator";
+import { IsEmail, MaxLength, MinLength } from 'class-validator';
 
 export default class LoginUserDto {
   @IsEmail({}, {message: 'Значение поля email должно быть валидным адресом электронной почты'})

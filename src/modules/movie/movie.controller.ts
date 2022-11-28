@@ -17,6 +17,8 @@ import CreateCommentDto from '../comment/dto/create-comment.dto.js';
 import CommentDto from '../comment/dto/comment.dto.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
+import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
+import { ValidationError } from 'class-validator';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -35,11 +37,28 @@ export default class MovieController extends Controller {
     this.logger.info('Регистрация эндпоинтов для MovieController…');
 
     const validateObjectIdMiddleware = new ValidateObjectIdMiddleware('id');
+    const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
+    const validateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
+
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
-    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
+
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [validateMovieDtoMiddleware]
+    });
+
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
     this.addRoute({path: '/to-watch', method: HttpMethod.Get, handler: this.getToWatchList});
-    this.addRoute({path: '/to-watch', method: HttpMethod.Post, handler: this.addToToWatchList});
+
+    this.addRoute({
+      path: '/to-watch',
+      method: HttpMethod.Post,
+      handler: this.addToToWatchList,
+      middlewares: [validateMovieDtoMiddleware]
+    });
+
     this.addRoute({path: '/to-watch', method: HttpMethod.Delete, handler: this.deleteFromToWatchList});
 
     this.addRoute({
@@ -53,7 +72,7 @@ export default class MovieController extends Controller {
       path: '/:id/comments',
       method: HttpMethod.Post,
       handler: this.createComment,
-      middlewares: [validateObjectIdMiddleware]
+      middlewares: [validateObjectIdMiddleware, validateCommentDtoMiddleware]
     });
 
     this.addRoute({
@@ -67,7 +86,7 @@ export default class MovieController extends Controller {
       path: '/:id',
       method: HttpMethod.Put,
       handler: this.update,
-      middlewares: [validateObjectIdMiddleware]
+      middlewares: [validateObjectIdMiddleware, validateMovieDtoMiddleware]
     });
 
     this.addRoute({
@@ -161,8 +180,8 @@ export default class MovieController extends Controller {
   }
 
   public async createComment(
-    req: Request<{id: string}, Record<string, unknown>, CreateCommentDto>,
-    res: Response
+    req: Request<{id: string}, CommentDto | ValidationError[], CreateCommentDto>,
+    res: Response<CommentDto | ValidationError[]>
   ): Promise<void> {
     const comment = await this.commentService.create(req.params.id, req.body);
     if (!comment) {

@@ -11,7 +11,7 @@ export default class CreateMovieDto {
   public description!: string;
 
   @IsDateString({}, {message: 'Поле publicationDate должно быть валидной датой ISO'})
-  public publicationDate!: string;
+  public publicationDate!: Date;
 
   @IsIn(GENRES, {message: 'Поле genre должно иметь тип Genre'})
   public genre!: Genre;

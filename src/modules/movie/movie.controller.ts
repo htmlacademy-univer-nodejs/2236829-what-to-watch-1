@@ -186,13 +186,6 @@ export default class MovieController extends Controller {
     res: Response<CommentDto | ValidationError[]>
   ): Promise<void> {
     const comment = await this.commentService.create(req.params.id, req.body);
-    if (!comment) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Фильм с идентификатором ${req.params.id} не существует.`,
-        'CommentController'
-      );
-    }
     this.created(res, fillDto(CommentDto, comment));
   }
 }

@@ -19,6 +19,7 @@ import { CommentServiceInterface } from '../comment/comment-service.interface.js
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { ValidationError } from 'class-validator';
+import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -39,6 +40,7 @@ export default class MovieController extends Controller {
     const validateObjectIdMiddleware = new ValidateObjectIdMiddleware('id');
     const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
     const validateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
+    const movieExistsMiddleware = new DocumentExistsMiddleware(movieService, 'Movie', 'id');
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
 
@@ -65,35 +67,35 @@ export default class MovieController extends Controller {
       path: '/:id/comments',
       method: HttpMethod.Get,
       handler: this.getComments,
-      middlewares: [validateObjectIdMiddleware]
+      middlewares: [validateObjectIdMiddleware, movieExistsMiddleware]
     });
 
     this.addRoute({
       path: '/:id/comments',
       method: HttpMethod.Post,
       handler: this.createComment,
-      middlewares: [validateObjectIdMiddleware, validateCommentDtoMiddleware]
+      middlewares: [validateObjectIdMiddleware, validateCommentDtoMiddleware, movieExistsMiddleware]
     });
 
     this.addRoute({
       path: '/:id',
       method: HttpMethod.Get,
       handler: this.getById,
-      middlewares: [validateObjectIdMiddleware]
+      middlewares: [validateObjectIdMiddleware, movieExistsMiddleware]
     });
 
     this.addRoute({
       path: '/:id',
       method: HttpMethod.Put,
       handler: this.update,
-      middlewares: [validateObjectIdMiddleware, validateMovieDtoMiddleware]
+      middlewares: [validateObjectIdMiddleware, validateMovieDtoMiddleware, movieExistsMiddleware]
     });
 
     this.addRoute({
       path: '/:id',
       method: HttpMethod.Delete,
       handler: this.deleteById,
-      middlewares: [validateObjectIdMiddleware]
+      middlewares: [validateObjectIdMiddleware, movieExistsMiddleware]
     });
   }
 

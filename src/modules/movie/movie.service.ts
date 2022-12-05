@@ -64,4 +64,8 @@ export default class MovieService implements MovieServiceInterface {
     }
     return query.exec();
   }
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.movieModel.exists({_id: documentId})) !== null;
+  }
 }

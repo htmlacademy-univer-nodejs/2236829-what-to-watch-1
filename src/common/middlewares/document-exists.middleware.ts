@@ -16,7 +16,7 @@ export class DocumentExistsMiddleware implements MiddlewareInterface {
     if (!await this.service.exists(documentId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
-        `${this.entityName} with ${documentId} not found.`,
+        `${this.entityName} с идентификатором ${documentId} не существует.`,
         'DocumentExistsMiddleware'
       );
     }

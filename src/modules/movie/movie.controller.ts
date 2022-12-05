@@ -13,12 +13,20 @@ import MovieDto from './dto/movie.dto.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
 import HttpError from '../../common/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
+import CreateCommentDto from '../comment/dto/create-comment.dto.js';
+import CommentDto from '../comment/dto/comment.dto.js';
+import { CommentServiceInterface } from '../comment/comment-service.interface.js';
+import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
+import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
+import { ValidationError } from 'class-validator';
 
 @injectable()
 export default class MovieController extends Controller {
   constructor(
     @inject(Component.MovieServiceInterface)
     private readonly movieService: MovieServiceInterface,
+    @inject(Component.CommentServiceInterface)
+    private readonly commentService: CommentServiceInterface,
     @inject(Component.ConfigInterface)
     private readonly configService: ConfigInterface,
     @inject(Component.LoggerInterface)
@@ -28,15 +36,65 @@ export default class MovieController extends Controller {
 
     this.logger.info('Регистрация эндпоинтов для MovieController…');
 
+    const validateObjectIdMiddleware = new ValidateObjectIdMiddleware('id');
+    const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
+    const validateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
+
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
-    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
+
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [validateMovieDtoMiddleware]
+    });
+
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
     this.addRoute({path: '/to-watch', method: HttpMethod.Get, handler: this.getToWatchList});
-    this.addRoute({path: '/to-watch', method: HttpMethod.Post, handler: this.addToToWatchList});
+
+    this.addRoute({
+      path: '/to-watch',
+      method: HttpMethod.Post,
+      handler: this.addToToWatchList,
+      middlewares: [validateMovieDtoMiddleware]
+    });
+
     this.addRoute({path: '/to-watch', method: HttpMethod.Delete, handler: this.deleteFromToWatchList});
-    this.addRoute({path: '/:id', method: HttpMethod.Get, handler: this.getById});
-    this.addRoute({path: '/:id', method: HttpMethod.Put, handler: this.update});
-    this.addRoute({path: '/:id', method: HttpMethod.Delete, handler: this.deleteById});
+
+    this.addRoute({
+      path: '/:id/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [validateObjectIdMiddleware]
+    });
+
+    this.addRoute({
+      path: '/:id/comments',
+      method: HttpMethod.Post,
+      handler: this.createComment,
+      middlewares: [validateObjectIdMiddleware, validateCommentDtoMiddleware]
+    });
+
+    this.addRoute({
+      path: '/:id',
+      method: HttpMethod.Get,
+      handler: this.getById,
+      middlewares: [validateObjectIdMiddleware]
+    });
+
+    this.addRoute({
+      path: '/:id',
+      method: HttpMethod.Put,
+      handler: this.update,
+      middlewares: [validateObjectIdMiddleware, validateMovieDtoMiddleware]
+    });
+
+    this.addRoute({
+      path: '/:id',
+      method: HttpMethod.Delete,
+      handler: this.deleteById,
+      middlewares: [validateObjectIdMiddleware]
+    });
   }
 
   public async getAll(
@@ -111,5 +169,28 @@ export default class MovieController extends Controller {
       'Метод не реализован',
       'MovieController',
     );
+  }
+
+  public async getComments(
+    req: Request<{id: string}>,
+    res: Response
+  ): Promise<void> {
+    const comments = await this.commentService.findByMovieId(req.params.id);
+    this.ok(res, fillDto(CommentDto, comments));
+  }
+
+  public async createComment(
+    req: Request<{id: string}, CommentDto | ValidationError[], CreateCommentDto>,
+    res: Response<CommentDto | ValidationError[]>
+  ): Promise<void> {
+    const comment = await this.commentService.create(req.params.id, req.body);
+    if (!comment) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Фильм с идентификатором ${req.params.id} не существует.`,
+        'CommentController'
+      );
+    }
+    this.created(res, fillDto(CommentDto, comment));
   }
 }

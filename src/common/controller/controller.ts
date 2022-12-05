@@ -21,7 +21,16 @@ export abstract class Controller implements ControllerInterface {
   public addRoute<P, ResBody, ReqBody, ReqQuery>(
     route: RouteInterface<P, ResBody, ReqBody, ReqQuery, Record<string, unknown>>
   ) {
-    this._router[route.method](route.path, asyncHandler(route.handler.bind(this)));
+    const routeHandler = asyncHandler(route.handler.bind(this));
+    const middlewares = route.middlewares?.map(
+      (middleware) => asyncHandler(middleware.execute.bind(middleware))
+    );
+
+    if (middlewares) {
+      this._router[route.method](route.path, ...middlewares, routeHandler);
+    } else {
+      this._router[route.method](route.path, routeHandler);
+    }
     this.logger.info(`Добавлен обработчик запросов: ${route.method.toUpperCase()} ${route.path}`);
   }
 

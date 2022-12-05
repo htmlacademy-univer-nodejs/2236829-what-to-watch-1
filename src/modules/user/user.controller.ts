@@ -12,6 +12,8 @@ import { StatusCodes } from 'http-status-codes';
 import { fillDto } from '../../utils/common.js';
 import UserDto from './dto/user.dto.js';
 import LoginUserDto from './dto/login-user.dto.js';
+import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
+import { ValidationError } from 'class-validator';
 
 @injectable()
 export default class UserController extends Controller {
@@ -26,15 +28,30 @@ export default class UserController extends Controller {
     super(logger);
     this.logger.info('Регистрация эндпоинтов для UserController…');
 
-    this.addRoute({path: '/register', method: HttpMethod.Post, handler: this.create});
-    this.addRoute({path: '/login', method: HttpMethod.Post, handler: this.login});
+    const validateUserDtoMiddleware = new ValidateDtoMiddleware(CreateUserDto);
+    const validateLoginDtoMiddleware = new ValidateDtoMiddleware(LoginUserDto);
+
+    this.addRoute({
+      path: '/register',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [validateUserDtoMiddleware]
+    });
+
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Post,
+      handler: this.login,
+      middlewares: [validateLoginDtoMiddleware]
+    });
+
     this.addRoute({path: '/login', method: HttpMethod.Get, handler: this.getCurrentUser});
     this.addRoute({path: '/logout', method: HttpMethod.Post, handler: this.logout});
   }
 
   public async create(
-    req: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDto>,
-    res: Response,
+    req: Request<Record<string, unknown>, ValidationError[], CreateUserDto>,
+    res: Response<ValidationError[]>,
   ): Promise<void> {
     const existsUser = await this.userService.findByEmail(req.body.email);
 
@@ -55,7 +72,7 @@ export default class UserController extends Controller {
   }
 
   public async login(
-    req: Request<Record<string, unknown>, Record<string, unknown>, LoginUserDto>
+    req: Request<Record<string, unknown>, ValidationError[], LoginUserDto>
   ): Promise<void> {
     const existsUser = await this.userService.findByEmail(req.body.email);
 

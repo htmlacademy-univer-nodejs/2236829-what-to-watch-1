@@ -185,7 +185,7 @@ export default class MovieController extends Controller {
     req: Request<{id: string}, CommentDto | ValidationError[], CreateCommentDto>,
     res: Response<CommentDto | ValidationError[]>
   ): Promise<void> {
-    const comment = await this.commentService.create(req.params.id, req.body);
+    const comment = await this.commentService.create(req.params.id, req.user.id, req.body);
     this.created(res, fillDto(CommentDto, comment));
   }
 }

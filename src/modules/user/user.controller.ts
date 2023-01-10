@@ -18,7 +18,7 @@ import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-ob
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
 import { JWT_ALGORITM } from './user.constant.js';
 import LoggedUserDto from './dto/logged-user.dto.js';
-import { AuthorizationMiddleware } from '../../common/middlewares/authorization-middleware.middleware.js';
+import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -35,7 +35,7 @@ export default class UserController extends Controller {
 
     const validateUserDtoMiddleware = new ValidateDtoMiddleware(CreateUserDto);
     const validateLoginDtoMiddleware = new ValidateDtoMiddleware(LoginUserDto);
-    const authorizationMiddleware = new AuthorizationMiddleware();
+    const authorizationMiddleware = new AuthorizeMiddleware();
 
     this.addRoute({
       path: '/register',

@@ -20,7 +20,7 @@ import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-ob
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { ValidationError } from 'class-validator';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
-import { AuthorizationMiddleware } from '../../common/middlewares/authorization-middleware.middleware.js';
+import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -42,7 +42,7 @@ export default class MovieController extends Controller {
     const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
     const validateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
     const movieExistsMiddleware = new DocumentExistsMiddleware(movieService, 'Movie', 'id');
-    const authorizationMiddleware = new AuthorizationMiddleware();
+    const authorizationMiddleware = new AuthorizeMiddleware();
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
 

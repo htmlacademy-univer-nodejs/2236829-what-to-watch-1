@@ -9,13 +9,15 @@ import HttpError from '../../common/errors/http-error.js';
 import { UserServiceInterface } from './user-service.interface.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
 import { StatusCodes } from 'http-status-codes';
-import { fillDto } from '../../utils/common.js';
+import { createJWT, fillDto } from '../../utils/common.js';
 import UserDto from './dto/user.dto.js';
 import LoginUserDto from './dto/login-user.dto.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { ValidationError } from 'class-validator';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
+import { JWT_ALGORITM } from './user.constant.js';
+import LoggedUserDto from './dto/logged-user.dto.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -84,23 +86,26 @@ export default class UserController extends Controller {
   }
 
   public async login(
-    req: Request<Record<string, unknown>, ValidationError[], LoginUserDto>
+    req: Request<Record<string, unknown>, LoggedUserDto | ValidationError[], LoginUserDto>,
+    res: Response<LoggedUserDto | ValidationError[]>
   ): Promise<void> {
-    const existsUser = await this.userService.findByEmail(req.body.email);
+    const user = await this.userService.verifyUser(req.body, this.configService.get('SALT'));
 
-    if (!existsUser) {
+    if (!user) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
-        `Пользователь с почтой ${req.body.email} не существует`,
+        `Unauthorized`,
         'UserController',
       );
     }
 
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Метод не реализован',
-      'UserController',
+    const token = await createJWT(
+      JWT_ALGORITM,
+      this.configService.get('JWT_SECRET'),
+      {email: user.email, id: user.id}
     );
+
+    this.ok(res, fillDto(LoggedUserDto, {email: user.email, token}));
   }
 
   public async getCurrentUser(): Promise<void> {

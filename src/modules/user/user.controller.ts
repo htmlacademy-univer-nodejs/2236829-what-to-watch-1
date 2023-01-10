@@ -58,8 +58,6 @@ export default class UserController extends Controller {
       middlewares: [authorizationMiddleware]
     });
 
-    this.addRoute({path: '/logout', method: HttpMethod.Post, handler: this.logout});
-
     this.addRoute({
       path: '/:id/avatar',
       method: HttpMethod.Put,
@@ -131,14 +129,6 @@ export default class UserController extends Controller {
     }
 
     this.ok(res, fillDto(LoggedUserDto, user));
-  }
-
-  public async logout(): Promise<void> {
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Метод не реализован',
-      'UserController',
-    );
   }
 
   public async uploadAvatar(req: Request<{id: string}>, res: Response) {

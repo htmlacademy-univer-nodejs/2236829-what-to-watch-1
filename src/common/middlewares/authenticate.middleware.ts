@@ -28,7 +28,7 @@ export class AuthenticateMiddleware implements MiddlewareInterface {
         throw new Error('Bad Request');
       }
 
-      req.user = {email: payload.email.toString(), id: payload.id.toString()};
+      req.user = {email: `${payload.email}`, id: `${payload.id}`};
 
       return next();
     } catch {

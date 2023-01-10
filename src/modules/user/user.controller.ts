@@ -18,6 +18,7 @@ import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-ob
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
 import { JWT_ALGORITM } from './user.constant.js';
 import LoggedUserDto from './dto/logged-user.dto.js';
+import { AuthorizationMiddleware } from '../../common/middlewares/authorization-middleware.middleware.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -34,6 +35,7 @@ export default class UserController extends Controller {
 
     const validateUserDtoMiddleware = new ValidateDtoMiddleware(CreateUserDto);
     const validateLoginDtoMiddleware = new ValidateDtoMiddleware(LoginUserDto);
+    const authorizationMiddleware = new AuthorizationMiddleware();
 
     this.addRoute({
       path: '/register',
@@ -49,7 +51,13 @@ export default class UserController extends Controller {
       middlewares: [validateLoginDtoMiddleware]
     });
 
-    this.addRoute({path: '/login', method: HttpMethod.Get, handler: this.getCurrentUser});
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.getCurrentUser,
+      middlewares: [authorizationMiddleware]
+    });
+
     this.addRoute({path: '/logout', method: HttpMethod.Post, handler: this.logout});
 
     this.addRoute({
@@ -108,12 +116,21 @@ export default class UserController extends Controller {
     this.ok(res, fillDto(LoggedUserDto, {email: user.email, token}));
   }
 
-  public async getCurrentUser(): Promise<void> {
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Метод не реализован',
-      'UserController',
-    );
+  public async getCurrentUser(
+    req: Request<Record<string, unknown>, LoggedUserDto>,
+    res: Response<LoggedUserDto>
+  ): Promise<void> {
+    const user = await this.userService.findByEmail(req.user.email);
+
+    if (!user) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Пользователь не найден',
+        'UserController',
+      );
+    }
+
+    this.ok(res, fillDto(LoggedUserDto, user));
   }
 
   public async logout(): Promise<void> {

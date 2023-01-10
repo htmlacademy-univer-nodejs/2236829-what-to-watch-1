@@ -43,10 +43,7 @@ export default class ImportCommand implements CliCommandInterface {
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
 
-    await this.movieService.create({
-      ...movie,
-      userId: user.id
-    });
+    await this.movieService.create(user.id, movie);
   }
 
   public async execute(filename: string, login: string, password: string, host: string, dbname: string, salt: string): Promise<void> {

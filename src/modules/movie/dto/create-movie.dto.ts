@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsIn, IsInt, IsMongoId, MaxLength, MinLength, IsNumber, Min, IsString } from 'class-validator';
+import { IsArray, IsDateString, IsIn, IsInt, MaxLength, MinLength, IsNumber, Min, IsString } from 'class-validator';
 import { Genre, GENRES } from '../../../types/genre.type';
 
 export default class CreateMovieDto {
@@ -35,9 +35,6 @@ export default class CreateMovieDto {
   @IsNumber({}, {message: 'Поле duration должно быть числом'})
   @Min(0, {message: 'Значения поля duration не может быть меньше 0'})
   public duration!: number;
-
-  @IsMongoId({message: 'Поле userId должно быть корректным идентификатором'})
-  public userId!: string;
 
   @IsString({message: 'Поле posterUri должно быть строкой'})
   public posterUri!: string;

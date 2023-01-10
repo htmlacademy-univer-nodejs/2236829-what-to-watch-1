@@ -143,7 +143,7 @@ export default class MovieController extends Controller {
     req: Request<Record<string, unknown>, Record<string, unknown>, CreateMovieDto>,
     res: Response
   ): Promise<void> {
-    const result = await this.movieService.create(req.body);
+    const result = await this.movieService.create(req.user.id, req.body);
     this.created(res, fillDto(MovieDto, result));
   }
 
@@ -151,7 +151,7 @@ export default class MovieController extends Controller {
     req: Request<{id: string}, Record<string, unknown>, CreateMovieDto>,
     res: Response
   ): Promise<void> {
-    const result = await this.movieService.update(req.params.id, req.body);
+    const result = await this.movieService.update(req.params.id, req.user.id, req.body);
     this.created(res, fillDto(MovieDto, result));
   }
 

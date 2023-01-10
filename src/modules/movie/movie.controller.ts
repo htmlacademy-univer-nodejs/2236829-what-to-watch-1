@@ -20,6 +20,7 @@ import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-ob
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { ValidationError } from 'class-validator';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
+import { AuthorizationMiddleware } from '../../common/middlewares/authorization-middleware.middleware.js';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -41,6 +42,7 @@ export default class MovieController extends Controller {
     const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
     const validateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
     const movieExistsMiddleware = new DocumentExistsMiddleware(movieService, 'Movie', 'id');
+    const authorizationMiddleware = new AuthorizationMiddleware();
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.getAll});
 
@@ -48,20 +50,32 @@ export default class MovieController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [validateMovieDtoMiddleware]
+      middlewares: [authorizationMiddleware, validateMovieDtoMiddleware]
     });
 
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
-    this.addRoute({path: '/to-watch', method: HttpMethod.Get, handler: this.getToWatchList});
+
+    this.addRoute({
+      path: '/to-watch',
+      method: HttpMethod.Get,
+      handler:
+      this.getToWatchList,
+      middlewares: [authorizationMiddleware]
+    });
 
     this.addRoute({
       path: '/to-watch',
       method: HttpMethod.Post,
       handler: this.addToToWatchList,
-      middlewares: [validateMovieDtoMiddleware]
+      middlewares: [authorizationMiddleware, validateMovieDtoMiddleware]
     });
 
-    this.addRoute({path: '/to-watch', method: HttpMethod.Delete, handler: this.deleteFromToWatchList});
+    this.addRoute({
+      path: '/to-watch',
+      method: HttpMethod.Delete,
+      handler: this.deleteFromToWatchList,
+      middlewares: [authorizationMiddleware]
+    });
 
     this.addRoute({
       path: '/:id/comments',
@@ -74,7 +88,7 @@ export default class MovieController extends Controller {
       path: '/:id/comments',
       method: HttpMethod.Post,
       handler: this.createComment,
-      middlewares: [validateObjectIdMiddleware, validateCommentDtoMiddleware, movieExistsMiddleware]
+      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, validateCommentDtoMiddleware, movieExistsMiddleware]
     });
 
     this.addRoute({
@@ -88,14 +102,14 @@ export default class MovieController extends Controller {
       path: '/:id',
       method: HttpMethod.Put,
       handler: this.update,
-      middlewares: [validateObjectIdMiddleware, validateMovieDtoMiddleware, movieExistsMiddleware]
+      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, validateMovieDtoMiddleware, movieExistsMiddleware]
     });
 
     this.addRoute({
       path: '/:id',
       method: HttpMethod.Delete,
       handler: this.deleteById,
-      middlewares: [validateObjectIdMiddleware, movieExistsMiddleware]
+      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, movieExistsMiddleware]
     });
   }
 

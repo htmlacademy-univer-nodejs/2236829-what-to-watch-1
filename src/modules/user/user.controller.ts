@@ -70,8 +70,8 @@ export default class UserController extends Controller {
   }
 
   public async create(
-    req: Request<Record<string, unknown>, ValidationError[], CreateUserDto>,
-    res: Response<ValidationError[]>,
+    req: Request<Record<string, unknown>, UserDto | ValidationError[], CreateUserDto>,
+    res: Response<UserDto | ValidationError[]>,
   ): Promise<void> {
     const existsUser = await this.userService.findByEmail(req.body.email);
 

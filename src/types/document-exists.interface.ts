@@ -1,3 +1,3 @@
-export interface DocumentExistsInterface {
-  exists(documentId: string): Promise<boolean>;
+export interface DocumentExistsInterface<Id> {
+  exists(documentId: Id): Promise<boolean>;
 }

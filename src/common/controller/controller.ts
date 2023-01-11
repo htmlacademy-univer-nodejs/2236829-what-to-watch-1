@@ -34,14 +34,14 @@ export abstract class Controller implements ControllerInterface {
     this.logger.info(`Добавлен обработчик запросов: ${route.method.toUpperCase()} ${route.path}`);
   }
 
-  public send<T>(res: Response, statusCode: number, data: T): void {
+  public send<T>(res: Response<T>, statusCode: number, data: T): void {
     res
       .type('application/json')
       .status(statusCode)
       .json(data);
   }
 
-  public created<T>(res: Response, data: T): void {
+  public created<T>(res: Response<T>, data: T): void {
     this.send(res, StatusCodes.CREATED, data);
   }
 
@@ -49,7 +49,7 @@ export abstract class Controller implements ControllerInterface {
     res.status(StatusCodes.NO_CONTENT).send();
   }
 
-  public ok<T>(res: Response, data: T): void {
+  public ok<T>(res: Response<T>, data: T): void {
     this.send(res, StatusCodes.OK, data);
   }
 }

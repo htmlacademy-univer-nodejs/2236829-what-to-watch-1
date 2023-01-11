@@ -1,4 +1,4 @@
-import { IsDateString, IsMongoId, IsString, Max, Min } from 'class-validator';
+import { IsDateString, IsString, Max, Min } from 'class-validator';
 
 export default class CreateCommentDto {
   @IsString({message: 'Поле text должно быть строкой'})
@@ -10,7 +10,4 @@ export default class CreateCommentDto {
 
   @IsDateString({}, {message: 'Поле date должно быть валидной датой ISO'})
   public date!: Date;
-
-  @IsMongoId({message: 'Поле userId должно быть корректным идентификатором'})
-  public userId!: string;
 }

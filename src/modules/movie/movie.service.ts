@@ -17,25 +17,25 @@ export default class MovieService implements MovieServiceInterface {
     private readonly movieModel: types.ModelType<MovieEntity>
   ) {}
 
-  public async create(dto: CreateMovieDto): Promise<DocumentType<MovieEntity>> {
-    const result = await this.movieModel.create(dto);
+  public async create(userId: string, dto: CreateMovieDto): Promise<DocumentType<MovieEntity>> {
+    const result = await this.movieModel.create({...dto, userId});
     this.logger.info(`Создан фильм: ${dto.title}`);
 
     return result;
   }
 
-  public async update(id: string, dto: CreateMovieDto): Promise<DocumentType<MovieEntity> | null> {
+  public async update(id: string, userId: string, dto: CreateMovieDto): Promise<DocumentType<MovieEntity> | null> {
     const movie = await this.findById(id);
     if (!movie) {
       this.logger.info(`Фильм не был изменён, так как не существует: ${dto.title}`);
       return null;
     }
-    if (movie.userId?.toString() !== dto.userId) {
-      this.logger.info(`Фильм не был изменён, так как не принадлежит пользователю: ${movie.title}, ${dto.userId}`);
+    if (movie.userId?.toString() !== userId) {
+      this.logger.info(`Фильм не был изменён, так как не принадлежит пользователю: ${movie.title}, ${userId}`);
       return null;
     }
 
-    const result = await this.movieModel.findOneAndReplace({_id: id}, dto, {new: true});
+    const result = await this.movieModel.findOneAndReplace({_id: id}, {...dto, userId}, {new: true});
     this.logger.info(`Изменён фильм: ${movie.title} → ${dto.title}`);
 
     return result;

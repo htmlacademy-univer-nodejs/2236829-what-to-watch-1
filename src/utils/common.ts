@@ -5,6 +5,7 @@ import { isGenre } from '../types/genre.type.js';
 import { Movie } from '../types/movie.type.js';
 import { ValidationError } from 'class-validator';
 import { PropertyValidationError } from '../types/property-validation-error.type.js';
+import { ServiceError } from '../types/service-error.enum.js';
 
 export function createMovie(str: string): Movie {
   const [
@@ -70,8 +71,10 @@ export const createSHA256 = (line: string, salt: string): string => {
 export const fillDto = <T, V>(someDto: ClassConstructor<T>, plainObject: V) =>
   plainToInstance(someDto, plainObject, {excludeExtraneousValues: true});
 
-export const createErrorObject = (message: string) => ({
-  error: message,
+export const createErrorObject = (serviceError: ServiceError, message: string, details: PropertyValidationError[] = []) => ({
+  errorType: serviceError,
+  message,
+  details: [...details]
 });
 
 export const createJWT = async (algoritm: string, jwtSecret: string, payload: object): Promise<string> =>

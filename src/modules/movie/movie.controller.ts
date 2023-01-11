@@ -58,8 +58,7 @@ export default class MovieController extends Controller {
     this.addRoute({
       path: '/to-watch',
       method: HttpMethod.Get,
-      handler:
-      this.getToWatchList,
+      handler: this.getToWatchList,
       middlewares: [authorizationMiddleware]
     });
 

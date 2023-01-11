@@ -8,7 +8,7 @@ import { CliCommandInterface } from './cli-command.interface.js';
 export default class GenerateCommand implements CliCommandInterface {
   public readonly name = '--generate';
 
-  public async execute(...parameters:string[]): Promise<void> {
+  public async execute(...parameters: string[]): Promise<void> {
     const [count, filepath, url] = parameters;
     const moviesCount = parseInt(count, 10);
     let initialData: MockData;

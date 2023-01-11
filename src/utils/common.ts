@@ -1,9 +1,10 @@
 import * as jose from 'jose';
 import crypto from 'crypto';
-import { plainToInstance } from 'class-transformer';
-import { ClassConstructor } from 'class-transformer/types/interfaces/class-constructor.type.js';
+import { plainToInstance, ClassConstructor } from 'class-transformer';
 import { isGenre } from '../types/genre.type.js';
 import { Movie } from '../types/movie.type.js';
+import { ValidationError } from 'class-validator';
+import { PropertyValidationError } from '../types/property-validation-error.type.js';
 
 export function createMovie(str: string): Movie {
   const [
@@ -79,3 +80,10 @@ export const createJWT = async (algoritm: string, jwtSecret: string, payload: ob
     .setIssuedAt()
     .setExpirationTime('2d')
     .sign(crypto.createSecretKey(jwtSecret, 'utf-8'));
+
+export const transformErrors = (errors: ValidationError[]): PropertyValidationError[] =>
+  errors.map(({property, value, constraints}) => ({
+    property,
+    value,
+    messages: constraints ? Object.values(constraints) : []
+  }));

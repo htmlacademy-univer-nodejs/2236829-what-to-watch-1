@@ -13,7 +13,7 @@ import { createJWT, fillDto } from '../../utils/common.js';
 import UserDto from './dto/user.dto.js';
 import LoginUserDto from './dto/login-user.dto.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
-import { ValidationError } from 'class-validator';
+import ValidationError from '../../common/errors/validation-error.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
 import { JWT_ALGORITM } from './user.constant.js';

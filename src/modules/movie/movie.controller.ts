@@ -18,7 +18,7 @@ import CommentDto from '../comment/dto/comment.dto.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
-import { ValidationError } from 'class-validator';
+import ValidationError from '../../common/errors/validation-error.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
 

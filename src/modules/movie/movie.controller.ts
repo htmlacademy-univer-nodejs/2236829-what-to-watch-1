@@ -139,16 +139,16 @@ export default class MovieController extends Controller {
   }
 
   public async create(
-    req: Request<Record<string, unknown>, Record<string, unknown>, CreateMovieDto>,
-    res: Response
+    req: Request<Record<string, unknown>, MovieDto | ValidationError[], CreateMovieDto>,
+    res: Response<MovieDto | ValidationError[]>
   ): Promise<void> {
     const result = await this.movieService.create(req.user.id, req.body);
     this.created(res, fillDto(MovieDto, result));
   }
 
   public async update(
-    req: Request<{id: string}, Record<string, unknown>, CreateMovieDto>,
-    res: Response
+    req: Request<{id: string}, MovieDto | ValidationError[], CreateMovieDto>,
+    res: Response<MovieDto | ValidationError[]>
   ): Promise<void> {
     const result = await this.movieService.update(req.params.id, req.user.id, req.body);
     this.created(res, fillDto(MovieDto, result));

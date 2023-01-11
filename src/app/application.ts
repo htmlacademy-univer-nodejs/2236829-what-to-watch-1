@@ -9,6 +9,7 @@ import { DatabaseInterface } from '../common/database-client/database.interface.
 import { ControllerInterface } from '../common/controller/controller.interface.js';
 import { ExceptionFilterInterface } from '../common/errors/exception-filter.interface.js';
 import { AuthenticateMiddleware } from '../common/middlewares/authenticate.middleware.js';
+import { getFullServerPath } from '../utils/common.js';
 
 @injectable()
 export default class Application {
@@ -72,6 +73,6 @@ export default class Application {
     this.initMiddleware();
     this.initRoutes();
     this.initExceptionFilters();
-    this.expressApp.listen(port, () => this.logger.info(`Сервер запущен на http://localhost:${port}`));
+    this.expressApp.listen(port, () => this.logger.info(`Сервер запущен на ${getFullServerPath(this.config.get('HOST'), this.config.get('PORT'))}`));
   }
 }

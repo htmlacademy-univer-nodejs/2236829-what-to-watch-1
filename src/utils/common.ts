@@ -6,6 +6,7 @@ import { Movie } from '../types/movie.type.js';
 import { ValidationError } from 'class-validator';
 import { PropertyValidationError } from '../types/property-validation-error.type.js';
 import { ServiceError } from '../types/service-error.enum.js';
+import { DEFAULT_STATIC_IMAGES } from '../app/application.constant.js';
 
 export function createMovie(str: string): Movie {
   const [
@@ -92,3 +93,37 @@ export const transformErrors = (errors: ValidationError[]): PropertyValidationEr
   }));
 
 export const getFullServerPath = (host: string, port: number) => `http://${host}:${port}`;
+
+const isObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+export const transformProperty = (
+  property: string,
+  object: Record<string, unknown>,
+  transformFn: (key: string, value: unknown) => unknown
+) => {
+  Object.keys(object)
+    .forEach((key) => {
+      const value = object[key];
+      if (key === property) {
+        object[key] = transformFn(key, value);
+        return;
+      }
+      if (isObject(value)) {
+        transformProperty(property, value, transformFn);
+      }
+    });
+};
+
+export const transformPathesInObject = (
+    properties: string[], staticPath: string, uploadPath: string, object: Record<string, unknown>
+  ) => {
+  properties
+    .forEach((property) => transformProperty(property, object, (_, value) => {
+      if (typeof value !== 'string') {
+        return value;
+      }
+      const rootPath = DEFAULT_STATIC_IMAGES.includes(value) ? staticPath : uploadPath;
+      return `${rootPath}/${value}`;
+    }));
+};

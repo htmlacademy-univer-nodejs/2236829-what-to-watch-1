@@ -14,6 +14,7 @@ export type ConfigSchema = {
   PROMO_MOVIE_ID: string;
   UPLOAD_DIRECTORY: string;
   JWT_SECRET: string;
+  STATIC_DIRECTORY_PATH: string;
 };
 
 export const configSchema = convict<ConfigSchema>({
@@ -76,5 +77,11 @@ export const configSchema = convict<ConfigSchema>({
     format: String,
     env: 'JWT_SECRET',
     default: null
+  },
+  STATIC_DIRECTORY_PATH: {
+    doc: 'Path to directory with static resources',
+    format: String,
+    env: 'STATIC_DIRECTORY_PATH',
+    default: '/static'
   },
 });

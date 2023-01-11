@@ -30,11 +30,11 @@ export default class MovieController extends Controller {
     @inject(Component.CommentServiceInterface)
     private readonly commentService: CommentServiceInterface,
     @inject(Component.ConfigInterface)
-    private readonly configService: ConfigInterface,
+    configService: ConfigInterface,
     @inject(Component.LoggerInterface)
     logger: LoggerInterface,
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Регистрация эндпоинтов для MovieController…');
 

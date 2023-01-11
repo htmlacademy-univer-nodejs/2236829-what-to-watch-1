@@ -26,11 +26,11 @@ export default class UserController extends Controller {
     @inject(Component.UserServiceInterface)
     private readonly userService: UserServiceInterface,
     @inject(Component.ConfigInterface)
-    private readonly configService: ConfigInterface,
+    configService: ConfigInterface,
     @inject(Component.LoggerInterface)
     logger: LoggerInterface,
   ) {
-    super(logger);
+    super(logger, configService);
     this.logger.info('Регистрация эндпоинтов для UserController…');
 
     const validateUserDtoMiddleware = new ValidateDtoMiddleware(CreateUserDto);

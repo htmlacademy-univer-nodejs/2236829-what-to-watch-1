@@ -12,7 +12,7 @@ export type ConfigSchema = {
   DB_PORT: number;
   DB_NAME: string;
   PROMO_MOVIE_ID: string;
-  UPLOAD_DIRECTORY: string;
+  UPLOAD_DIRECTORY_PATH: string;
   JWT_SECRET: string;
   STATIC_DIRECTORY_PATH: string;
   HOST: string;
@@ -67,10 +67,10 @@ export const configSchema = convict<ConfigSchema>({
     env: 'PROMO_MOVIE_ID',
     default: null
   },
-  UPLOAD_DIRECTORY: {
+  UPLOAD_DIRECTORY_PATH: {
     doc: 'Directory for upload files',
     format: String,
-    env: 'UPLOAD_DIRECTORY',
+    env: 'UPLOAD_DIRECTORY_PATH',
     default: null
   },
   JWT_SECRET: {

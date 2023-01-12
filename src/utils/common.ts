@@ -94,7 +94,7 @@ export const transformErrors = (errors: ValidationError[]): PropertyValidationEr
 
 export const getFullServerPath = (host: string, port: number) => `http://${host}:${port}`;
 
-const isObject = (value: unknown): value is Record<string, unknown> =>
+export const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
 export const transformProperty = (

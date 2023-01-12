@@ -36,7 +36,7 @@ export default class Application {
     this.expressApp.use(express.json());
     this.expressApp.use(
       '/upload',
-      express.static(this.config.get('UPLOAD_DIRECTORY'))
+      express.static(this.config.get('UPLOAD_DIRECTORY_PATH'))
     );
     this.expressApp.use(
       '/static',

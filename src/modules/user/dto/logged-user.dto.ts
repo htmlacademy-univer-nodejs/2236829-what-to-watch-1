@@ -5,5 +5,11 @@ export default class LoggedUserDto {
   public token!: string;
 
   @Expose()
+  public name!: string;
+
+  @Expose()
+  public avatarUri!: string;
+
+  @Expose()
   public email!: string;
 }

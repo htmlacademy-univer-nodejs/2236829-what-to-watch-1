@@ -116,8 +116,8 @@ export const transformProperty = (
 };
 
 export const transformPathesInObject = (
-    properties: string[], staticPath: string, uploadPath: string, object: Record<string, unknown>
-  ) => {
+  properties: string[], staticPath: string, uploadPath: string, object: Record<string, unknown>
+) => {
   properties
     .forEach((property) => transformProperty(property, object, (_, value) => {
       if (typeof value !== 'string') {

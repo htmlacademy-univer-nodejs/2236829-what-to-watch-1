@@ -127,7 +127,14 @@ export default class MovieController extends Controller {
     res: Response
   ): Promise<void> {
     const movie = await this.movieService.findById(req.params.id);
-    this.ok(res, fillDto(MovieDto, movie));
+    if (!movie) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Фильм не найден',
+        'MovieController',
+      );
+    }
+    this.ok(res, fillDto(MovieDto, {...movie, rating: movie.rating}));
   }
 
   public async getPromo(
@@ -135,7 +142,14 @@ export default class MovieController extends Controller {
     res: Response
   ): Promise<void> {
     const movie = await this.movieService.findById(this.configService.get('PROMO_MOVIE_ID'));
-    this.ok(res, fillDto(MovieDto, movie));
+    if (!movie) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Фильм не найден',
+        'MovieController',
+      );
+    }
+    this.ok(res, fillDto(MovieDto, {...movie, rating: movie.rating}));
   }
 
   public async create(
@@ -143,7 +157,7 @@ export default class MovieController extends Controller {
     res: Response<MovieDto | ValidationError[]>
   ): Promise<void> {
     const result = await this.movieService.create(req.user.id, req.body);
-    this.created(res, fillDto(MovieDto, result));
+    this.created(res, fillDto(MovieDto, {...result, rating: 0}));
   }
 
   public async update(
@@ -151,7 +165,14 @@ export default class MovieController extends Controller {
     res: Response<MovieDto | ValidationError[]>
   ): Promise<void> {
     const result = await this.movieService.update(req.params.id, req.user.id, req.body);
-    this.created(res, fillDto(MovieDto, result));
+    if (!result) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Фильм не найден',
+        'MovieController',
+      );
+    }
+    this.created(res, fillDto(MovieDto, {...result, rating: result.rating}));
   }
 
   public async deleteById(
@@ -199,6 +220,13 @@ export default class MovieController extends Controller {
     res: Response<CommentDto | ValidationError[]>
   ): Promise<void> {
     const comment = await this.commentService.create(req.params.id, req.user.id, req.body);
+    if (!comment) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Комментарий не найден',
+        'MovieController',
+      );
+    }
     this.created(res, fillDto(CommentDto, comment));
   }
 }

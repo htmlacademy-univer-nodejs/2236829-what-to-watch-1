@@ -69,8 +69,11 @@ export const createSHA256 = (line: string, salt: string): string => {
   return shaHasher.update(line).digest('hex');
 };
 
-export const fillDto = <T, V extends T>(someDto: ClassConstructor<T>, plainObject: V) =>
-  plainToInstance(someDto, plainObject, {excludeExtraneousValues: true});
+export function fillDto<T, V extends Record<keyof T, unknown>>(someDto: ClassConstructor<T>, plainObject: V[]): T[];
+export function fillDto<T, V extends Record<keyof T, unknown>>(someDto: ClassConstructor<T>, plainObject: V): T;
+export function fillDto<T, V extends Record<keyof T, unknown>>(someDto: ClassConstructor<T>, plainObject: V[] | V): T[] | T {
+  return plainToInstance(someDto, plainObject, {excludeExtraneousValues: true});
+}
 
 export const createErrorObject = (serviceError: ServiceError, message: string, details: PropertyValidationError[] = []) => ({
   errorType: serviceError,

@@ -103,6 +103,13 @@ export class MovieEntity extends defaultClasses.TimeStamps {
 
   @prop({ required: true })
   public backgroundColor!: string;
+
+  public get rating(): number {
+    if (!this.commentAmount) {
+      return 0;
+    }
+    return this.ratingSum / this.commentAmount;
+  }
 }
 
 export const MovieModel = getModelForClass(MovieEntity);

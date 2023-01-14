@@ -14,11 +14,11 @@ import UserDto from './dto/user.dto.js';
 import LoginUserDto from './dto/login-user.dto.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import ValidationError from '../../common/errors/validation-error.js';
-import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
 import { JWT_ALGORITM } from './user.constant.js';
 import LoggedUserDto from './dto/logged-user.dto.js';
 import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
+import UploadAvatarDto from './dto/upload-avatar.dto.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -36,6 +36,7 @@ export default class UserController extends Controller {
     const validateUserDtoMiddleware = new ValidateDtoMiddleware(CreateUserDto);
     const validateLoginDtoMiddleware = new ValidateDtoMiddleware(LoginUserDto);
     const authorizationMiddleware = new AuthorizeMiddleware();
+    const uploadAvatarMiddleware = new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY_PATH'), 'avatar');
 
     this.addRoute({
       path: '/register',
@@ -59,12 +60,12 @@ export default class UserController extends Controller {
     });
 
     this.addRoute({
-      path: '/:id/avatar',
+      path: '/login/avatar',
       method: HttpMethod.Put,
       handler: this.uploadAvatar,
       middlewares: [
-        new ValidateObjectIdMiddleware('id'),
-        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY_PATH'), 'avatar'),
+        authorizationMiddleware,
+        uploadAvatarMiddleware,
       ]
     });
   }
@@ -139,7 +140,20 @@ export default class UserController extends Controller {
     this.ok(res, fillDto(UserDto, user));
   }
 
-  public async uploadAvatar(req: Request<{id: string}>, res: Response) {
-    this.created(res, { filepath: req.file?.path });
+  public async uploadAvatar(
+    req: Request<Record<string, unknown>, UploadAvatarDto>,
+    res: Response<UploadAvatarDto>
+  ): Promise<void> {
+    const fileUri = req.file?.filename;
+    if (!fileUri) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Изображение не загружено',
+        'UserController',
+      );
+    }
+    const uploadFile = {avatarUri: fileUri};
+    await this.userService.updateAvatar(req.user.id, uploadFile);
+    this.created(res, fillDto(UploadAvatarDto, uploadFile));
   }
 }

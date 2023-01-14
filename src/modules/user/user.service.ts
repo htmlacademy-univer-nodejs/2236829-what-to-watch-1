@@ -6,6 +6,7 @@ import { UserServiceInterface } from './user-service.interface.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { Component } from '../../types/component.type.js';
 import LoginUserDto from './dto/login-user.dto.js';
+import UploadAvatarDto from './dto/upload-avatar.dto.js';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
@@ -42,6 +43,12 @@ export default class UserService implements UserServiceInterface {
     }
 
     return this.create(dto, salt);
+  }
+
+  public updateAvatar(id: string, dto: UploadAvatarDto): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel
+      .findByIdAndUpdate(id, dto, {upsert: false, new: true})
+      .exec();
   }
 
   public async verifyUser(dto: LoginUserDto, salt: string): Promise<DocumentType<UserEntity> | null> {

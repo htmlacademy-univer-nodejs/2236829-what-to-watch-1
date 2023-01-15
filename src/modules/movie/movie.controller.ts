@@ -8,6 +8,7 @@ import { MovieServiceInterface } from './movie-service.interface.js';
 import MovieListItemResponse from './response/movie-list-item.response.js';
 import { fillDto } from '../../utils/common.js';
 import CreateMovieDto from './dto/create-movie.dto.js';
+import UpdateMovieDto from './dto/update-movie.dto.js';
 import { Genre } from '../../types/genre.type.js';
 import MovieResponse from './response/movie.response.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
@@ -40,7 +41,8 @@ export default class MovieController extends Controller {
 
     const validateObjectIdMiddleware = new ValidateObjectIdMiddleware('id');
     const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
-    const validateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
+    const validateCreateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
+    const validateUpdateMovieDtoMiddleware = new ValidateDtoMiddleware(UpdateMovieDto);
     const movieExistsMiddleware = new DocumentExistsMiddleware(movieService, 'Movie', 'id');
     const authorizationMiddleware = new AuthorizeMiddleware();
 
@@ -50,7 +52,7 @@ export default class MovieController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [authorizationMiddleware, validateMovieDtoMiddleware]
+      middlewares: [authorizationMiddleware, validateCreateMovieDtoMiddleware]
     });
 
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
@@ -66,7 +68,7 @@ export default class MovieController extends Controller {
       path: '/to-watch',
       method: HttpMethod.Post,
       handler: this.addToToWatchList,
-      middlewares: [authorizationMiddleware, validateMovieDtoMiddleware]
+      middlewares: [authorizationMiddleware, validateCreateMovieDtoMiddleware]
     });
 
     this.addRoute({
@@ -101,7 +103,7 @@ export default class MovieController extends Controller {
       path: '/:id',
       method: HttpMethod.Put,
       handler: this.update,
-      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, validateMovieDtoMiddleware, movieExistsMiddleware]
+      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, validateUpdateMovieDtoMiddleware, movieExistsMiddleware]
     });
 
     this.addRoute({
@@ -161,7 +163,7 @@ export default class MovieController extends Controller {
   }
 
   public async update(
-    req: Request<{id: string}, MovieResponse | ValidationError[], CreateMovieDto>,
+    req: Request<{id: string}, MovieResponse | ValidationError[], UpdateMovieDto>,
     res: Response<MovieResponse | ValidationError[]>
   ): Promise<void> {
     const result = await this.movieService.update(req.params.id, req.user.id, req.body);

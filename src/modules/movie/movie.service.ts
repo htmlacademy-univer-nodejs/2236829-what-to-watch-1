@@ -2,6 +2,7 @@ import { inject, injectable } from 'inversify';
 import { MovieEntity } from './movie.entity.js';
 import { DocumentType, types } from '@typegoose/typegoose';
 import CreateMovieDto from './dto/create-movie.dto.js';
+import UpdateMovieDto from './dto/update-movie.dto.js';
 import { MovieServiceInterface } from './movie-service.interface.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { Component } from '../../types/component.type.js';
@@ -24,7 +25,7 @@ export default class MovieService implements MovieServiceInterface {
     return result;
   }
 
-  public async update(id: string, userId: string, dto: CreateMovieDto): Promise<DocumentType<MovieEntity> | null> {
+  public async update(id: string, userId: string, dto: UpdateMovieDto): Promise<DocumentType<MovieEntity> | null> {
     const movie = await this.findById(id);
     if (!movie) {
       this.logger.info(`Фильм не был изменён, так как не существует: ${dto.title}`);

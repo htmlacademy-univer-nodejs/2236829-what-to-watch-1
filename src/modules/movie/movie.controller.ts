@@ -15,7 +15,7 @@ import { ConfigInterface } from '../../common/config/config.interface.js';
 import HttpError from '../../common/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import CreateCommentDto from '../comment/dto/create-comment.dto.js';
-import CommentDto from '../comment/dto/comment.dto.js';
+import CommentResponse from '../comment/response/comment.response.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
@@ -214,12 +214,12 @@ export default class MovieController extends Controller {
     res: Response
   ): Promise<void> {
     const comments = await this.commentService.findByMovieId(req.params.id);
-    this.ok(res, fillDto(CommentDto, comments));
+    this.ok(res, fillDto(CommentResponse, comments));
   }
 
   public async createComment(
-    req: Request<{id: string}, CommentDto | ValidationError[], CreateCommentDto>,
-    res: Response<CommentDto | ValidationError[]>
+    req: Request<{id: string}, CommentResponse | ValidationError[], CreateCommentDto>,
+    res: Response<CommentResponse | ValidationError[]>
   ): Promise<void> {
     const comment = await this.commentService.create(req.params.id, req.user.id, req.body);
     if (!comment) {
@@ -229,6 +229,6 @@ export default class MovieController extends Controller {
         'MovieController',
       );
     }
-    this.created(res, fillDto(CommentDto, comment));
+    this.created(res, fillDto(CommentResponse, comment));
   }
 }

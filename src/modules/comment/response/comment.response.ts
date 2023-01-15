@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import UserResponse from '../../user/response/user.response.js';
 
-export default class CommentDto {
+export default class CommentResponse {
   public text!: string;
   public rating!: number;
   public date!: string;

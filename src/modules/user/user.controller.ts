@@ -153,7 +153,7 @@ export default class UserController extends Controller {
       );
     }
     const uploadFile = {avatarUri: fileUri};
-    await this.userService.updateAvatar(req.user.id, uploadFile);
+    await this.userService.updateAvatar(req.user.id, fileUri);
     this.created(res, fillDto(UploadAvatarResponse, uploadFile));
   }
 }

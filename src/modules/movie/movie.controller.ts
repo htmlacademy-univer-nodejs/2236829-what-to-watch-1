@@ -5,11 +5,11 @@ import { Component } from '../../types/component.type.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
 import { MovieServiceInterface } from './movie-service.interface.js';
-import MovieListItemDto from './dto/movie-list-item.dto.js';
+import MovieListItemResponse from './response/movie-list-item.response.js';
 import { fillDto } from '../../utils/common.js';
 import CreateMovieDto from './dto/create-movie.dto.js';
 import { Genre } from '../../types/genre.type.js';
-import MovieDto from './dto/movie.dto.js';
+import MovieResponse from './response/movie.response.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
 import HttpError from '../../common/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
@@ -119,7 +119,7 @@ export default class MovieController extends Controller {
     const movies = req.query.genre
       ? await this.movieService.findByGenre(req.query.genre, req.query.limit)
       : await this.movieService.getAll(req.query.limit);
-    this.ok(res, fillDto(MovieListItemDto, movies));
+    this.ok(res, fillDto(MovieListItemResponse, movies));
   }
 
   public async getById(
@@ -134,7 +134,7 @@ export default class MovieController extends Controller {
         'MovieController',
       );
     }
-    this.ok(res, fillDto(MovieDto, {...movie, rating: movie.rating}));
+    this.ok(res, fillDto(MovieResponse, {...movie, rating: movie.rating}));
   }
 
   public async getPromo(
@@ -149,20 +149,20 @@ export default class MovieController extends Controller {
         'MovieController',
       );
     }
-    this.ok(res, fillDto(MovieDto, {...movie, rating: movie.rating}));
+    this.ok(res, fillDto(MovieResponse, {...movie, rating: movie.rating}));
   }
 
   public async create(
-    req: Request<Record<string, unknown>, MovieDto | ValidationError[], CreateMovieDto>,
-    res: Response<MovieDto | ValidationError[]>
+    req: Request<Record<string, unknown>, MovieResponse | ValidationError[], CreateMovieDto>,
+    res: Response<MovieResponse | ValidationError[]>
   ): Promise<void> {
     const result = await this.movieService.create(req.user.id, req.body);
-    this.created(res, fillDto(MovieDto, {...result, rating: 0}));
+    this.created(res, fillDto(MovieResponse, {...result, rating: 0}));
   }
 
   public async update(
-    req: Request<{id: string}, MovieDto | ValidationError[], CreateMovieDto>,
-    res: Response<MovieDto | ValidationError[]>
+    req: Request<{id: string}, MovieResponse | ValidationError[], CreateMovieDto>,
+    res: Response<MovieResponse | ValidationError[]>
   ): Promise<void> {
     const result = await this.movieService.update(req.params.id, req.user.id, req.body);
     if (!result) {
@@ -172,7 +172,7 @@ export default class MovieController extends Controller {
         'MovieController',
       );
     }
-    this.created(res, fillDto(MovieDto, {...result, rating: result.rating}));
+    this.created(res, fillDto(MovieResponse, {...result, rating: result.rating}));
   }
 
   public async deleteById(

@@ -1,6 +1,6 @@
 import { Genre } from '../../../types/genre.type';
 
-export default class MovieListItemDto {
+export default class MovieListItemResponse {
   public title!: string;
   public publicationDate!: Date;
   public genre!: Genre;

@@ -1,7 +1,7 @@
 import { Transform } from 'class-transformer';
 import { Genre } from '../../../types/genre.type';
 
-export default class MovieDto {
+export default class MovieResponse {
   public title!: string;
   public description!: string;
   public publicationDate!: Date;

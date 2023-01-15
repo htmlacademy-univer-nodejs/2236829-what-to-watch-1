@@ -22,6 +22,7 @@ import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.mid
 import ValidationError from '../../common/errors/validation-error.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
+import { ToWatchServiceInterface } from '../to-watch/to-watch-service.interface.js';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -30,6 +31,8 @@ export default class MovieController extends Controller {
     private readonly movieService: MovieServiceInterface,
     @inject(Component.CommentServiceInterface)
     private readonly commentService: CommentServiceInterface,
+    @inject(Component.ToWatchServiceInterface)
+    private readonly toWatchService: ToWatchServiceInterface,
     @inject(Component.ConfigInterface)
     configService: ConfigInterface,
     @inject(Component.LoggerInterface)
@@ -185,28 +188,28 @@ export default class MovieController extends Controller {
     this.noContent(res);
   }
 
-  public async getToWatchList(): Promise<void> {
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Метод не реализован',
-      'MovieController',
-    );
+  public async getToWatchList(
+    req: Request<Record<string, unknown>, MovieResponse[]>,
+    res: Response<MovieResponse[]>
+  ): Promise<void> {
+    const result = await this.toWatchService.getToWatch(req.user.id);
+    this.ok(res, fillDto(MovieResponse, result?.list ?? []));
   }
 
-  public async addToToWatchList(): Promise<void> {
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Метод не реализован',
-      'MovieController',
-    );
+  public async addToToWatchList(
+    req: Request<{id: string}>,
+    res: Response
+  ): Promise<void> {
+    await this.toWatchService.addToToWatch(req.user.id, req.params.id);
+    this.noContent(res);
   }
 
-  public async deleteFromToWatchList(): Promise<void> {
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Метод не реализован',
-      'MovieController',
-    );
+  public async deleteFromToWatchList(
+    req: Request<{id: string}>,
+    res: Response
+  ): Promise<void> {
+    await this.toWatchService.deleteFromToWatch(req.user.id, req.params.id);
+    this.noContent(res);
   }
 
   public async getComments(

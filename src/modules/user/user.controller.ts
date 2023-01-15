@@ -10,15 +10,15 @@ import { UserServiceInterface } from './user-service.interface.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
 import { StatusCodes } from 'http-status-codes';
 import { createJWT, fillDto } from '../../utils/common.js';
-import UserDto from './dto/user.dto.js';
+import UserResponse from './response/user.response.js';
 import LoginUserDto from './dto/login-user.dto.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import ValidationError from '../../common/errors/validation-error.js';
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
 import { JWT_ALGORITM } from './user.constant.js';
-import LoggedUserDto from './dto/logged-user.dto.js';
+import LoggedUserResponse from './response/logged-user.response.js';
 import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
-import UploadAvatarDto from './dto/upload-avatar.dto.js';
+import UploadAvatarResponse from './response/upload-avatar.response.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -71,8 +71,8 @@ export default class UserController extends Controller {
   }
 
   public async create(
-    req: Request<Record<string, unknown>, UserDto | ValidationError[], CreateUserDto>,
-    res: Response<UserDto | ValidationError[]>,
+    req: Request<Record<string, unknown>, UserResponse | ValidationError[], CreateUserDto>,
+    res: Response<UserResponse | ValidationError[]>,
   ): Promise<void> {
     const existsUser = await this.userService.findByEmail(req.body.email);
 
@@ -88,13 +88,13 @@ export default class UserController extends Controller {
     this.send(
       res,
       StatusCodes.CREATED,
-      fillDto(UserDto, result)
+      fillDto(UserResponse, result)
     );
   }
 
   public async login(
-    req: Request<Record<string, unknown>, LoggedUserDto | ValidationError[], LoginUserDto>,
-    res: Response<LoggedUserDto | ValidationError[]>
+    req: Request<Record<string, unknown>, LoggedUserResponse | ValidationError[], LoginUserDto>,
+    res: Response<LoggedUserResponse | ValidationError[]>
   ): Promise<void> {
     const user = await this.userService.verifyUser(req.body, this.configService.get('SALT'));
 
@@ -112,12 +112,12 @@ export default class UserController extends Controller {
       {email: user.email, id: user.id}
     );
 
-    this.ok(res, fillDto(LoggedUserDto, {...user, token}));
+    this.ok(res, fillDto(LoggedUserResponse, {...user, token}));
   }
 
   public async getCurrentUser(
-    req: Request<Record<string, unknown>, UserDto>,
-    res: Response<UserDto>
+    req: Request<Record<string, unknown>, UserResponse>,
+    res: Response<UserResponse>
   ): Promise<void> {
     if (!req.user) {
       throw new HttpError(
@@ -137,12 +137,12 @@ export default class UserController extends Controller {
       );
     }
 
-    this.ok(res, fillDto(UserDto, user));
+    this.ok(res, fillDto(UserResponse, user));
   }
 
   public async uploadAvatar(
-    req: Request<Record<string, unknown>, UploadAvatarDto>,
-    res: Response<UploadAvatarDto>
+    req: Request<Record<string, unknown>, UploadAvatarResponse>,
+    res: Response<UploadAvatarResponse>
   ): Promise<void> {
     const fileUri = req.file?.filename;
     if (!fileUri) {
@@ -154,6 +154,6 @@ export default class UserController extends Controller {
     }
     const uploadFile = {avatarUri: fileUri};
     await this.userService.updateAvatar(req.user.id, uploadFile);
-    this.created(res, fillDto(UploadAvatarDto, uploadFile));
+    this.created(res, fillDto(UploadAvatarResponse, uploadFile));
   }
 }

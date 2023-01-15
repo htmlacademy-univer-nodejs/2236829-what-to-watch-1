@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 
-export default class LoggedUserDto {
+export default class LoggedUserResponse {
   @Expose()
   public token!: string;
 

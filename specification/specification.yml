@@ -106,27 +106,6 @@ paths:
         "403":
           description: SESSIONID содержит неверный токен
 
-  /users/logout:
-    post:
-      tags:
-        - users
-      summary: Авторизация пользователя
-      description: Авторизует пользователя
-
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
-
-      responses:
-        "204":
-          description: Успешно. Пользователь деавторизован
-
-        "403":
-          description: SESSIONID содержит неверный токен
-
   /movies:
     post:
       tags:
@@ -162,6 +141,41 @@ paths:
 
         "422":
           description: Объект фильма не прошёл валидацию
+
+    get:
+      tags:
+        - movies
+      summary: Получение списка фильмов
+      description: Получает список фильмов не больше указанного количества указанных жанров
+
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 0
+            example: 60
+            default: 60
+          description: Максимальное требуемое количество вхождений в запрошенный список
+
+        - in: query
+          name: genre
+          schema:
+            $ref: '#/components/schemas/genre'
+          description: Жанр, к которому должны относиться все вхождения в запрошенном списке
+
+      responses:
+        "200":
+          description: Успешно. Список фильмов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/movieListItem'
+
+        "422":
+          description: Запрошено невалидное количество фильмов или фильмы несуществующего жанра
 
 
   /movies/{movieId}:
@@ -267,70 +281,6 @@ paths:
 
         "404":
           description: Фильм с указанным идентификатором не существует
-
-  /movies?limit=60&genre:
-    get:
-      tags:
-        - movies
-      summary: Получение списка фильмов
-      description: Получает список фильмов не больше указанного количества указанных жанров
-
-      parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 0
-            example: 60
-          description: Максимальное требуемое количество вхождений в запрошенный список
-
-        - in: query
-          name: genre
-          schema:
-            $ref: '#/components/schemas/genre'
-          description: Жанр, к которому должны относиться все вхождения в запрошенном списке
-
-      responses:
-        "200":
-          description: Успешно. Список фильмов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/movieListItem'
-
-        "422":
-          description: Запрошено невалидное количество фильмов или фильмы несуществующего жанра
-
-  /movies?limit=60:
-    get:
-      tags:
-        - movies
-      summary: Получение списка фильмов
-      description: Получает список фильмов не больше указанного количества всех жанров
-
-      parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 0
-            example: 60
-          description: Максимальное требуемое количество вхождений в запрошенный список
-
-      responses:
-        "200":
-          description: Успешно. Список фильмов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/movieListItem'
-
-        "422":
-          description: Запрошено невалидное количество фильмов
 
   /movies/promo:
     get:

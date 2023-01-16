@@ -11,7 +11,7 @@ export default class CreateMovieDto {
   public description!: string;
 
   @IsDateString({}, {message: 'Поле publicationDate должно быть валидной датой ISO'})
-  public publicationDate!: Date;
+  public publicationDate: Date = new Date();
 
   @IsIn(GENRES, {message: 'Поле genre должно иметь тип Genre'})
   public genre!: Genre;
@@ -33,7 +33,7 @@ export default class CreateMovieDto {
   public producer!: string;
 
   @IsNumber({}, {message: 'Поле duration должно быть числом'})
-  @Min(0, {message: 'Значения поля duration не может быть меньше 0'})
+  @Min(0, {message: 'Значение поля duration не может быть меньше 0'})
   public duration!: number;
 
   @IsString({message: 'Поле posterUri должно быть строкой'})

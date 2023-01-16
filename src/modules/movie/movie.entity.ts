@@ -30,9 +30,9 @@ export class MovieEntity extends defaultClasses.TimeStamps {
 
   @prop({
     required: true,
-    default: Date.now
+    default: () => new Date()
   })
-  public publicationDate!: string;
+  public publicationDate!: Date;
 
   @prop({
     required: true,

@@ -9,5 +9,5 @@ export default class CreateCommentDto {
   public rating!: number;
 
   @IsDateString({}, {message: 'Поле date должно быть валидной датой ISO'})
-  public date!: Date;
+  public date: Date = new Date();
 }

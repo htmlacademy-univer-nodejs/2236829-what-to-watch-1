@@ -4,6 +4,7 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { ToWatchServiceInterface } from './to-watch-service.interface.js';
 import { Component } from '../../types/component.type.js';
 import { Populated } from '../../types/populated.type.js';
+import { MovieEntity } from '../movie/movie.entity.js';
 
 @injectable()
 export default class ToWatchService implements ToWatchServiceInterface {
@@ -13,8 +14,8 @@ export default class ToWatchService implements ToWatchServiceInterface {
   ) {}
 
   public async getToWatch(userId: string): Promise<Populated<DocumentType<ToWatchEntity>, 'list'> | null> {
-    const result = await this.toWatchModel.findOne({userId}).populate('list').exec();
-    return result as Populated<typeof result, 'list'>;
+    const result = await this.toWatchModel.findOne({userId}).populate<{list: DocumentType<MovieEntity>[]}>('list').exec();
+    return result;
   }
 
   public async addToToWatch(userId: string, movieId: string): Promise<DocumentType<ToWatchEntity>> {

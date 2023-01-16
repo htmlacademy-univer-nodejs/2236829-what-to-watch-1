@@ -25,6 +25,8 @@ export default class Application {
     private databaseClient: DatabaseInterface,
     @inject(Component.MovieController)
     private movieController: ControllerInterface,
+    @inject(Component.WatchLaterController)
+    private watchLaterController: ControllerInterface,
     @inject(Component.UserController)
     private userController: ControllerInterface,
     @inject(Component.ExceptionFilterInterface)
@@ -54,6 +56,7 @@ export default class Application {
 
   public initRoutes() {
     this.expressApp.use('/movies', this.movieController.router);
+    this.expressApp.use('/watch-later', this.watchLaterController.router);
     this.expressApp.use('/users', this.userController.router);
   }
 

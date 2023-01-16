@@ -22,9 +22,6 @@ import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.mid
 import ValidationError from '../../common/errors/validation-error.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
-import { WatchLaterServiceInterface } from '../watch-later/watch-later-service.interface.js';
-import AddToWatchLaterDto from '../watch-later/dto/add-to-watch-later.dto.js';
-import DeleteFromWatchLaterDto from '../watch-later/dto/delete-from-watch-later.dto.js';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -33,8 +30,6 @@ export default class MovieController extends Controller {
     private readonly movieService: MovieServiceInterface,
     @inject(Component.CommentServiceInterface)
     private readonly commentService: CommentServiceInterface,
-    @inject(Component.WatchLaterServiceInterface)
-    private readonly WatchLaterService: WatchLaterServiceInterface,
     @inject(Component.ConfigInterface)
     configService: ConfigInterface,
     @inject(Component.LoggerInterface)
@@ -48,8 +43,6 @@ export default class MovieController extends Controller {
     const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
     const validateCreateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
     const validateUpdateMovieDtoMiddleware = new ValidateDtoMiddleware(UpdateMovieDto);
-    const validateAddToWatchLaterDtoMiddleware = new ValidateDtoMiddleware(AddToWatchLaterDto);
-    const validateDeleteFromWatchLaterDtoMiddleware = new ValidateDtoMiddleware(DeleteFromWatchLaterDto);
     const movieExistsMiddleware = new DocumentExistsMiddleware(movieService, 'Movie', 'id');
     const authorizationMiddleware = new AuthorizeMiddleware();
 
@@ -63,27 +56,6 @@ export default class MovieController extends Controller {
     });
 
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
-
-    this.addRoute({
-      path: '/watch-later',
-      method: HttpMethod.Get,
-      handler: this.getWatchLaterList,
-      middlewares: [authorizationMiddleware]
-    });
-
-    this.addRoute({
-      path: '/watch-later',
-      method: HttpMethod.Post,
-      handler: this.addToWatchLaterList,
-      middlewares: [authorizationMiddleware, validateAddToWatchLaterDtoMiddleware]
-    });
-
-    this.addRoute({
-      path: '/watch-later',
-      method: HttpMethod.Delete,
-      handler: this.deleteFromWatchLaterList,
-      middlewares: [authorizationMiddleware, validateDeleteFromWatchLaterDtoMiddleware]
-    });
 
     this.addRoute({
       path: '/:id/comments',
@@ -189,44 +161,6 @@ export default class MovieController extends Controller {
     res: Response
   ): Promise<void> {
     await this.movieService.deleteById(req.params.id);
-    this.noContent(res);
-  }
-
-  public async getWatchLaterList(
-    req: Request<Record<string, unknown>, MovieListItemResponse[]>,
-    res: Response<MovieListItemResponse[]>
-  ): Promise<void> {
-    const result = await this.WatchLaterService.getWatchLater(req.user.id);
-    this.ok(res, fillDto(MovieListItemResponse, result?.list ?? []));
-  }
-
-  public async addToWatchLaterList(
-    req: Request<Record<string, unknown>, Record<string, unknown>, AddToWatchLaterDto>,
-    res: Response<Record<string, unknown>>
-  ): Promise<void> {
-    if (await this.movieService.exists(req.body.movieId)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        'Фильм не найден',
-        'MovieController',
-      );
-    }
-    await this.WatchLaterService.addToWatchLater(req.user.id, req.body.movieId);
-    this.noContent(res);
-  }
-
-  public async deleteFromWatchLaterList(
-    req: Request<Record<string, unknown>, Record<string, unknown>, DeleteFromWatchLaterDto>,
-    res: Response<Record<string, unknown>>
-  ): Promise<void> {
-    if (await this.movieService.exists(req.body.movieId)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        'Фильм не найден',
-        'MovieController',
-      );
-    }
-    await this.WatchLaterService.deleteFromWatchLater(req.user.id, req.body.movieId);
     this.noContent(res);
   }
 

@@ -1,4 +1,3 @@
-import { Transform } from 'class-transformer';
 import { Genre } from '../../../types/genre.type';
 
 export default class MovieResponse {
@@ -16,7 +15,5 @@ export default class MovieResponse {
   public posterUri!: string;
   public backgroundImageUri!: string;
   public backgroundColor!: string;
-
-  @Transform(({obj}) => obj.ratingSum / obj.commentAmount)
   public rating!: number;
 }

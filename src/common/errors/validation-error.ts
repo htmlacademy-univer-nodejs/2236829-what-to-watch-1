@@ -2,7 +2,7 @@ import { PropertyValidationError } from '../../types/property-validation-error.t
 import { StatusCodes } from 'http-status-codes';
 
 export default class ValidationError extends Error {
-  public httpStatusCode!: number;
+  public httpStatusCode: number;
   public details: PropertyValidationError[];
 
   constructor(message: string, errors: PropertyValidationError[]) {

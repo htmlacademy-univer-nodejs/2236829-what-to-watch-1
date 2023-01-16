@@ -29,7 +29,7 @@ export class CommentEntity extends defaultClasses.TimeStamps {
     ref: UserEntity,
     required: true
   })
-  public userId!: Ref<UserEntity>;
+  public user!: Ref<UserEntity>;
 
   @prop({
     ref: MovieEntity,

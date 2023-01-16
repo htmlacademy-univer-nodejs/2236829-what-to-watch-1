@@ -20,7 +20,7 @@ export default class CommentService implements CommentServiceInterface {
     if (!movie) {
       return null;
     }
-    const comment = await this.commentModel.create({movieId, userId, ...dto});
+    const comment = await this.commentModel.create({movieId, user: userId, ...dto});
     return comment.populate('userId');
   }
 

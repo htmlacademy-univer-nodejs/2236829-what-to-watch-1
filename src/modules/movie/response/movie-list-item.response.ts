@@ -17,7 +17,7 @@ export default class MovieListItemResponse {
 
   @Expose()
   @Type(() => UserResponse)
-  public userId!: UserResponse;
+  public user!: UserResponse;
 
   @Expose()
   public posterUri!: string;

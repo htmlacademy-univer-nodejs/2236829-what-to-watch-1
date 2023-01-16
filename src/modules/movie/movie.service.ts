@@ -19,7 +19,7 @@ export default class MovieService implements MovieServiceInterface {
   ) {}
 
   public async create(userId: string, dto: CreateMovieDto): Promise<DocumentType<MovieEntity>> {
-    const result = await this.movieModel.create({...dto, userId});
+    const result = await this.movieModel.create({...dto, user: userId});
     this.logger.info(`Создан фильм: ${dto.title}`);
 
     return result;
@@ -31,12 +31,12 @@ export default class MovieService implements MovieServiceInterface {
       this.logger.info(`Фильм не был изменён, так как не существует: ${dto.title}`);
       return null;
     }
-    if (movie.userId?.toString() !== userId) {
+    if (movie.user?.toString() !== userId) {
       this.logger.info(`Фильм не был изменён, так как не принадлежит пользователю: ${movie.title}, ${userId}`);
       return null;
     }
 
-    const result = await this.movieModel.findOneAndReplace({_id: id}, {...dto, userId}, {new: true});
+    const result = await this.movieModel.findOneAndReplace({_id: id}, {...dto, user: userId}, {new: true});
     this.logger.info(`Изменён фильм: ${movie.title} → ${dto.title}`);
 
     return result;

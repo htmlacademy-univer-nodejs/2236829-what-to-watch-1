@@ -35,7 +35,7 @@ export default class MovieResponse {
 
   @Expose()
   @Type(() => UserResponse)
-  public userId!: UserResponse;
+  public user!: UserResponse;
 
   @Expose()
   public posterUri!: string;

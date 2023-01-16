@@ -23,6 +23,8 @@ import ValidationError from '../../common/errors/validation-error.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
 import { ToWatchServiceInterface } from '../to-watch/to-watch-service.interface.js';
+import AddToToWatchDto from '../to-watch/dto/add-to-to-watch.dto.js';
+import DeleteFromToWatchDto from '../to-watch/dto/delete-from-to-watch.dto.js';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -46,6 +48,8 @@ export default class MovieController extends Controller {
     const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
     const validateCreateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
     const validateUpdateMovieDtoMiddleware = new ValidateDtoMiddleware(UpdateMovieDto);
+    const validateAddToToWatchDtoMiddleware = new ValidateDtoMiddleware(AddToToWatchDto);
+    const validateDeleteFromToWatchDtoMiddleware = new ValidateDtoMiddleware(DeleteFromToWatchDto);
     const movieExistsMiddleware = new DocumentExistsMiddleware(movieService, 'Movie', 'id');
     const authorizationMiddleware = new AuthorizeMiddleware();
 
@@ -71,14 +75,14 @@ export default class MovieController extends Controller {
       path: '/to-watch',
       method: HttpMethod.Post,
       handler: this.addToToWatchList,
-      middlewares: [authorizationMiddleware, validateCreateMovieDtoMiddleware]
+      middlewares: [authorizationMiddleware, validateAddToToWatchDtoMiddleware]
     });
 
     this.addRoute({
       path: '/to-watch',
       method: HttpMethod.Delete,
       handler: this.deleteFromToWatchList,
-      middlewares: [authorizationMiddleware]
+      middlewares: [authorizationMiddleware, validateDeleteFromToWatchDtoMiddleware]
     });
 
     this.addRoute({
@@ -197,18 +201,32 @@ export default class MovieController extends Controller {
   }
 
   public async addToToWatchList(
-    req: Request<{id: string}>,
-    res: Response
+    req: Request<Record<string, unknown>, Record<string, unknown>, AddToToWatchDto>,
+    res: Response<Record<string, unknown>>
   ): Promise<void> {
-    await this.toWatchService.addToToWatch(req.user.id, req.params.id);
+    if (await this.movieService.exists(req.body.movieId)) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Фильм не найден',
+        'MovieController',
+      );
+    }
+    await this.toWatchService.addToToWatch(req.user.id, req.body.movieId);
     this.noContent(res);
   }
 
   public async deleteFromToWatchList(
-    req: Request<{id: string}>,
-    res: Response
+    req: Request<Record<string, unknown>, Record<string, unknown>, DeleteFromToWatchDto>,
+    res: Response<Record<string, unknown>>
   ): Promise<void> {
-    await this.toWatchService.deleteFromToWatch(req.user.id, req.params.id);
+    if (await this.movieService.exists(req.body.movieId)) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        'Фильм не найден',
+        'MovieController',
+      );
+    }
+    await this.toWatchService.deleteFromToWatch(req.user.id, req.body.movieId);
     this.noContent(res);
   }
 

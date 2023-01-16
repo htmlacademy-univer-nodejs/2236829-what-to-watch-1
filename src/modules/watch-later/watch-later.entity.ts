@@ -4,14 +4,14 @@ import { UserEntity } from '../user/user.entity.js';
 
 const { prop, modelOptions } = typegoose;
 
-export interface ToWatchEntity extends defaultClasses.Base {}
+export interface WatchLaterEntity extends defaultClasses.Base {}
 
 @modelOptions({
   schemaOptions: {
-    collection: 'to-watch'
+    collection: 'watch-later'
   }
 })
-export class ToWatchEntity extends defaultClasses.TimeStamps {
+export class WatchLaterEntity extends defaultClasses.TimeStamps {
   @prop({
     ref: UserEntity,
     required: true
@@ -27,4 +27,4 @@ export class ToWatchEntity extends defaultClasses.TimeStamps {
   public list!: Ref<MovieEntity>[];
 }
 
-export const ToWatchModel = getModelForClass(ToWatchEntity);
+export const WatchLaterModel = getModelForClass(WatchLaterEntity);

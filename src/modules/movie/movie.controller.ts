@@ -22,9 +22,9 @@ import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.mid
 import ValidationError from '../../common/errors/validation-error.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { AuthorizeMiddleware } from '../../common/middlewares/authorize.middleware.js';
-import { ToWatchServiceInterface } from '../to-watch/to-watch-service.interface.js';
-import AddToToWatchDto from '../to-watch/dto/add-to-to-watch.dto.js';
-import DeleteFromToWatchDto from '../to-watch/dto/delete-from-to-watch.dto.js';
+import { WatchLaterServiceInterface } from '../watch-later/watch-later-service.interface.js';
+import AddToWatchLaterDto from '../watch-later/dto/add-to-watch-later.dto.js';
+import DeleteFromWatchLaterDto from '../watch-later/dto/delete-from-watch-later.dto.js';
 
 @injectable()
 export default class MovieController extends Controller {
@@ -33,8 +33,8 @@ export default class MovieController extends Controller {
     private readonly movieService: MovieServiceInterface,
     @inject(Component.CommentServiceInterface)
     private readonly commentService: CommentServiceInterface,
-    @inject(Component.ToWatchServiceInterface)
-    private readonly toWatchService: ToWatchServiceInterface,
+    @inject(Component.WatchLaterServiceInterface)
+    private readonly WatchLaterService: WatchLaterServiceInterface,
     @inject(Component.ConfigInterface)
     configService: ConfigInterface,
     @inject(Component.LoggerInterface)
@@ -48,8 +48,8 @@ export default class MovieController extends Controller {
     const validateCommentDtoMiddleware = new ValidateDtoMiddleware(CreateCommentDto);
     const validateCreateMovieDtoMiddleware = new ValidateDtoMiddleware(CreateMovieDto);
     const validateUpdateMovieDtoMiddleware = new ValidateDtoMiddleware(UpdateMovieDto);
-    const validateAddToToWatchDtoMiddleware = new ValidateDtoMiddleware(AddToToWatchDto);
-    const validateDeleteFromToWatchDtoMiddleware = new ValidateDtoMiddleware(DeleteFromToWatchDto);
+    const validateAddToWatchLaterDtoMiddleware = new ValidateDtoMiddleware(AddToWatchLaterDto);
+    const validateDeleteFromWatchLaterDtoMiddleware = new ValidateDtoMiddleware(DeleteFromWatchLaterDto);
     const movieExistsMiddleware = new DocumentExistsMiddleware(movieService, 'Movie', 'id');
     const authorizationMiddleware = new AuthorizeMiddleware();
 
@@ -65,24 +65,24 @@ export default class MovieController extends Controller {
     this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.getPromo});
 
     this.addRoute({
-      path: '/to-watch',
+      path: '/watch-later',
       method: HttpMethod.Get,
-      handler: this.getToWatchList,
+      handler: this.getWatchLaterList,
       middlewares: [authorizationMiddleware]
     });
 
     this.addRoute({
-      path: '/to-watch',
+      path: '/watch-later',
       method: HttpMethod.Post,
-      handler: this.addToToWatchList,
-      middlewares: [authorizationMiddleware, validateAddToToWatchDtoMiddleware]
+      handler: this.addToWatchLaterList,
+      middlewares: [authorizationMiddleware, validateAddToWatchLaterDtoMiddleware]
     });
 
     this.addRoute({
-      path: '/to-watch',
+      path: '/watch-later',
       method: HttpMethod.Delete,
-      handler: this.deleteFromToWatchList,
-      middlewares: [authorizationMiddleware, validateDeleteFromToWatchDtoMiddleware]
+      handler: this.deleteFromWatchLaterList,
+      middlewares: [authorizationMiddleware, validateDeleteFromWatchLaterDtoMiddleware]
     });
 
     this.addRoute({
@@ -192,16 +192,16 @@ export default class MovieController extends Controller {
     this.noContent(res);
   }
 
-  public async getToWatchList(
+  public async getWatchLaterList(
     req: Request<Record<string, unknown>, MovieListItemResponse[]>,
     res: Response<MovieListItemResponse[]>
   ): Promise<void> {
-    const result = await this.toWatchService.getToWatch(req.user.id);
+    const result = await this.WatchLaterService.getWatchLater(req.user.id);
     this.ok(res, fillDto(MovieListItemResponse, result?.list ?? []));
   }
 
-  public async addToToWatchList(
-    req: Request<Record<string, unknown>, Record<string, unknown>, AddToToWatchDto>,
+  public async addToWatchLaterList(
+    req: Request<Record<string, unknown>, Record<string, unknown>, AddToWatchLaterDto>,
     res: Response<Record<string, unknown>>
   ): Promise<void> {
     if (await this.movieService.exists(req.body.movieId)) {
@@ -211,12 +211,12 @@ export default class MovieController extends Controller {
         'MovieController',
       );
     }
-    await this.toWatchService.addToToWatch(req.user.id, req.body.movieId);
+    await this.WatchLaterService.addToWatchLater(req.user.id, req.body.movieId);
     this.noContent(res);
   }
 
-  public async deleteFromToWatchList(
-    req: Request<Record<string, unknown>, Record<string, unknown>, DeleteFromToWatchDto>,
+  public async deleteFromWatchLaterList(
+    req: Request<Record<string, unknown>, Record<string, unknown>, DeleteFromWatchLaterDto>,
     res: Response<Record<string, unknown>>
   ): Promise<void> {
     if (await this.movieService.exists(req.body.movieId)) {
@@ -226,7 +226,7 @@ export default class MovieController extends Controller {
         'MovieController',
       );
     }
-    await this.toWatchService.deleteFromToWatch(req.user.id, req.body.movieId);
+    await this.WatchLaterService.deleteFromWatchLater(req.user.id, req.body.movieId);
     this.noContent(res);
   }
 

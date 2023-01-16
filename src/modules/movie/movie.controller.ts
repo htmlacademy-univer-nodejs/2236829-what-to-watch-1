@@ -118,8 +118,8 @@ export default class MovieController extends Controller {
   }
 
   public async getAll(
-    req: Request<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, {genre?: Genre, limit?: number}>,
-    res: Response
+    req: Request<Record<string, unknown>, MovieListItemResponse[], Record<string, unknown>, {genre?: Genre, limit?: number}>,
+    res: Response<MovieListItemResponse[]>
   ): Promise<void> {
     const movies = req.query.genre
       ? await this.movieService.findByGenre(req.query.genre, req.query.limit)
@@ -128,8 +128,8 @@ export default class MovieController extends Controller {
   }
 
   public async getById(
-    req: Request<{id: string}>,
-    res: Response
+    req: Request<{id: string}, MovieResponse>,
+    res: Response<MovieResponse>
   ): Promise<void> {
     const movie = await this.movieService.findById(req.params.id);
     if (!movie) {
@@ -143,8 +143,8 @@ export default class MovieController extends Controller {
   }
 
   public async getPromo(
-    _req: Request,
-    res: Response
+    _req: Request<Record<string, unknown>, MovieResponse>,
+    res: Response<MovieResponse>
   ): Promise<void> {
     const movie = await this.movieService.findById(this.configService.get('PROMO_MOVIE_ID'));
     if (!movie) {
@@ -189,11 +189,11 @@ export default class MovieController extends Controller {
   }
 
   public async getToWatchList(
-    req: Request<Record<string, unknown>, MovieResponse[]>,
-    res: Response<MovieResponse[]>
+    req: Request<Record<string, unknown>, MovieListItemResponse[]>,
+    res: Response<MovieListItemResponse[]>
   ): Promise<void> {
     const result = await this.toWatchService.getToWatch(req.user.id);
-    this.ok(res, fillDto(MovieResponse, result?.list ?? []));
+    this.ok(res, fillDto(MovieListItemResponse, result?.list ?? []));
   }
 
   public async addToToWatchList(
@@ -213,8 +213,8 @@ export default class MovieController extends Controller {
   }
 
   public async getComments(
-    req: Request<{id: string}>,
-    res: Response
+    req: Request<{id: string}, CommentResponse[]>,
+    res: Response<CommentResponse[]>
   ): Promise<void> {
     const comments = await this.commentService.findByMovieId(req.params.id);
     this.ok(res, fillDto(CommentResponse, comments));

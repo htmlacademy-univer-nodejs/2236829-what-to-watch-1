@@ -46,10 +46,12 @@ export default class ExceptionFilter implements ExceptionFilterInterface {
   public catch(error: Error | HttpError | ValidationError, req: Request, res: Response): void {
     if (error instanceof HttpError) {
       this.handleHttpError(error, req, res);
-    } else if (error instanceof ValidationError) {
-      this.handleValidationError(error, req, res);
-    } else {
-      this.handleOtherError(error, req, res);
+      return;
     }
+    if (error instanceof ValidationError) {
+      this.handleValidationError(error, req, res);
+      return;
+    }
+    this.handleOtherError(error, req, res);
   }
 }

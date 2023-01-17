@@ -27,10 +27,25 @@ export default class MovieGenerator implements MovieGeneratorInterface {
     const backgroundColor = getRandomItem(this.mockData.backgroundColors);
 
     return [
-      title, description, publicationDate, genre, releaseYear, rating,
-      videoPreviewUri, videoUri, cast, producer, duration, commentAmount,
-      userName, userAvatarUri, userEmail, userPassword, posterUri,
-      backgroundImageUri, backgroundColor
+      title,
+      description,
+      publicationDate,
+      genre,
+      releaseYear,
+      rating,
+      videoPreviewUri,
+      videoUri,
+      cast,
+      producer,
+      duration,
+      commentAmount,
+      userName,
+      userAvatarUri,
+      userEmail,
+      userPassword,
+      posterUri,
+      backgroundImageUri,
+      backgroundColor,
     ].join('\t');
   }
 }

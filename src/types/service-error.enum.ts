@@ -1,5 +1,5 @@
 export enum ServiceError {
   ValidationError = 'VALIDATION_ERROR',
-  CommonError = 'COMMON_ERROR',
+  HttpError = 'HTTP_ERROR',
   InternalError = 'INTERNAL_ERROR'
 }

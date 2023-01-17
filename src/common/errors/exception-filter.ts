@@ -22,7 +22,7 @@ export default class ExceptionFilter implements ExceptionFilterInterface {
     this.logger.error(`[${error.detail}]: ${error.httpStatusCode} — ${error.message}`);
     res
       .status(error.httpStatusCode)
-      .json(createErrorObject(ServiceError.CommonError, error.message));
+      .json(createErrorObject(ServiceError.HttpError, error.message));
   }
 
   private handleOtherError(error: Error, _req: Request, res: Response) {
@@ -39,11 +39,21 @@ export default class ExceptionFilter implements ExceptionFilterInterface {
     );
 
     res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createErrorObject(ServiceError.ValidationError, error.message, error.details));
+      .status(error.httpStatusCode)
+      .json(
+        createErrorObject(
+          ServiceError.ValidationError,
+          error.message,
+          error.details
+        )
+      );
   }
 
-  public catch(error: Error | HttpError | ValidationError, req: Request, res: Response): void {
+  public catch(
+    error: Error | HttpError | ValidationError,
+    req: Request,
+    res: Response
+  ): void {
     if (error instanceof HttpError) {
       this.handleHttpError(error, req, res);
       return;

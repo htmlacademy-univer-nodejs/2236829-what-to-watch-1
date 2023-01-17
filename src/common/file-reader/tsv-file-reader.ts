@@ -1,6 +1,6 @@
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import { createReadStream } from 'fs';
-import { FileReaderInterface } from './file-reader.interface';
+import { FileReaderInterface } from './file-reader.interface.js';
 
 export default class TSVFileReader
   extends EventEmitter

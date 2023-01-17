@@ -1,9 +1,8 @@
 import { DocumentType } from '@typegoose/typegoose';
 import { WatchLaterEntity } from './watch-later.entity.js';
-import { Populated } from '../../types/populated.type.js';
 
 export interface WatchLaterServiceInterface {
-  getWatchLater(userId: string): Promise<Populated<DocumentType<WatchLaterEntity>, 'list'> | null>;
-  addToWatchLater(userId: string, movieId: string): Promise<DocumentType<WatchLaterEntity>>;
+  getWatchLater(userId: string): Promise<DocumentType<WatchLaterEntity> | null>;
+  addToWatchLater(userId: string, movieId: string): Promise<void>;
   deleteFromWatchLater(userId: string, movieId: string): Promise<void>;
 }

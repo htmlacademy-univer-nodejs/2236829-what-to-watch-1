@@ -11,7 +11,6 @@ export type ConfigSchema = {
   DB_PASSWORD: string;
   DB_PORT: number;
   DB_NAME: string;
-  PROMO_MOVIE_ID: string;
   UPLOAD_DIRECTORY_PATH: string;
   JWT_SECRET: string;
   STATIC_DIRECTORY_PATH: string;
@@ -38,55 +37,49 @@ export const configSchema = convict<ConfigSchema>({
     default: '127.0.0.1'
   },
   DB_USER: {
-    doc: 'Username to connect to the database (MongoDB)',
+    doc: 'Логин для входа в базу данных',
     format: String,
     env: 'DB_USER',
     default: null,
   },
   DB_PASSWORD: {
-    doc: 'Database connection password (MongoDB)',
+    doc: 'Пароль для входа в базу данных',
     format: String,
     env: 'DB_PASSWORD',
     default: null,
   },
   DB_PORT: {
-    doc: 'Port to connect to the database (MongoDB)',
+    doc: 'Порт базы данных',
     format: 'port',
     env: 'DB_PORT',
     default: 27017,
   },
   DB_NAME: {
-    doc: 'Database name (MongoDB)',
+    doc: 'Имя базы данных',
     format: String,
     env: 'DB_NAME',
     default: 'course-nodejs-restapi'
   },
-  PROMO_MOVIE_ID: {
-    doc: 'Id of promo movie',
-    format: String,
-    env: 'PROMO_MOVIE_ID',
-    default: null
-  },
   UPLOAD_DIRECTORY_PATH: {
-    doc: 'Directory for upload files',
+    doc: 'Директория для загрузки файлов',
     format: String,
     env: 'UPLOAD_DIRECTORY_PATH',
     default: null
   },
   JWT_SECRET: {
-    doc: 'Secret for sign JWT',
+    doc: 'JWT-секрет',
     format: String,
     env: 'JWT_SECRET',
     default: null
   },
   STATIC_DIRECTORY_PATH: {
-    doc: 'Path to directory with static resources',
+    doc: 'Директория со статическими файлами',
     format: String,
     env: 'STATIC_DIRECTORY_PATH',
     default: '/static'
   },
   HOST: {
-    doc: 'Host where started service',
+    doc: 'Хост, на котором запущено приложение',
     format: String,
     env: 'HOST',
     default: 'localhost'

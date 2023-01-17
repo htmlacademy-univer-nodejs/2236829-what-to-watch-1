@@ -116,7 +116,7 @@ export default class MovieController extends Controller {
     _req: Request<Record<string, unknown>, MovieResponse>,
     res: Response<MovieResponse>
   ): Promise<void> {
-    const movie = await this.movieService.findById(this.configService.get('PROMO_MOVIE_ID'));
+    const movie = await this.movieService.getAll(1);
     if (!movie) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
@@ -124,7 +124,7 @@ export default class MovieController extends Controller {
         'MovieController',
       );
     }
-    this.ok(res, fillDto(MovieResponse, movie));
+    this.ok(res, fillDto(MovieResponse, movie[0]));
   }
 
   public async create(

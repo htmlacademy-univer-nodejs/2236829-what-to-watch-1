@@ -1,7 +1,8 @@
-import { IsDateString, IsString, Max, Min } from 'class-validator';
+import { IsDateString, Max, MaxLength, Min, MinLength } from 'class-validator';
 
 export default class CreateCommentDto {
-  @IsString({message: 'Поле text должно быть строкой'})
+  @MinLength(5, {message: 'Поле text не может иметь длину меньше 5'})
+  @MaxLength(1024, {message: 'Поле text не может иметь длину больше 1024'})
   public text!: string;
 
   @Min(0, {message: 'Значение поля rating не может быть меньше 0'})

@@ -21,7 +21,6 @@ export default class MovieGenerator implements MovieGeneratorInterface {
     const userName = getRandomItem(this.mockData.userNames);
     const userAvatarUri = getRandomItem(this.mockData.userAvatarUris);
     const userEmail = getRandomItem(this.mockData.userEmails);
-    const userPassword = getRandomItem(this.mockData.userPasswords);
     const posterUri = getRandomItem(this.mockData.posterUris);
     const backgroundImageUri = getRandomItem(this.mockData.backgroundImageUris);
     const backgroundColor = getRandomItem(this.mockData.backgroundColors);
@@ -42,7 +41,6 @@ export default class MovieGenerator implements MovieGeneratorInterface {
       userName,
       userAvatarUri,
       userEmail,
-      userPassword,
       posterUri,
       backgroundImageUri,
       backgroundColor,

@@ -119,14 +119,6 @@ export default class UserController extends Controller {
     req: Request<Record<string, unknown>, UserResponse>,
     res: Response<UserResponse>
   ): Promise<void> {
-    if (!req.user) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Unauthorized',
-        'UserController'
-      );
-    }
-
     const user = await this.userService.findByEmail(req.user.email);
 
     if (!user) {

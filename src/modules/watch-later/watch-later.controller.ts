@@ -70,7 +70,8 @@ export default class WatchLaterController extends Controller {
     req: Request<Record<string, unknown>, Record<string, unknown>, AddToWatchLaterDto>,
     res: Response<Record<string, unknown>>
   ): Promise<void> {
-    if (await this.movieService.exists(req.body.movieId)) {
+    const movieExists = await this.movieService.exists(req.body.movieId);
+    if (movieExists) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         'Фильм не найден',
@@ -85,7 +86,8 @@ export default class WatchLaterController extends Controller {
     req: Request<Record<string, unknown>, Record<string, unknown>, DeleteFromWatchLaterDto>,
     res: Response<Record<string, unknown>>
   ): Promise<void> {
-    if (await this.movieService.exists(req.body.movieId)) {
+    const movieExists = await this.movieService.exists(req.body.movieId);
+    if (movieExists) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         'Фильм не найден',

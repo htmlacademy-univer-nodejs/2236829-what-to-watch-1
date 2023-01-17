@@ -22,6 +22,8 @@ import UploadAvatarResponse from './response/upload-avatar.response.js';
 
 @injectable()
 export default class UserController extends Controller {
+  private readonly _salt: string;
+
   constructor(
     @inject(Component.UserServiceInterface)
     private readonly userService: UserServiceInterface,
@@ -31,6 +33,8 @@ export default class UserController extends Controller {
     logger: LoggerInterface,
   ) {
     super(logger, configService);
+    this._salt = configService.get('SALT');
+
     this.logger.info('Регистрация эндпоинтов для UserController…');
 
     const validateUserDtoMiddleware = new ValidateDtoMiddleware(CreateUserDto);
@@ -84,19 +88,15 @@ export default class UserController extends Controller {
       );
     }
 
-    const result = await this.userService.create(req.body, this.configService.get('SALT'));
-    this.send(
-      res,
-      StatusCodes.CREATED,
-      fillDto(UserResponse, result)
-    );
+    const result = await this.userService.create(req.body, this._salt);
+    this.created(res, fillDto(UserResponse, result));
   }
 
   public async login(
     req: Request<Record<string, unknown>, LoggedUserResponse | ValidationError[], LoginUserDto>,
     res: Response<LoggedUserResponse | ValidationError[]>
   ): Promise<void> {
-    const user = await this.userService.verifyUser(req.body, this.configService.get('SALT'));
+    const user = await this.userService.verifyUser(req.body, this._salt);
 
     if (!user) {
       throw new HttpError(

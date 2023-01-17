@@ -55,7 +55,7 @@ export default class MovieService implements MovieServiceInterface {
     if (!isNullOrUndefined(limit)) {
       query = query.limit(limit);
     }
-    return query.exec();
+    return await query;
   }
 
   public async findByGenre(genre: Genre, limit?: number): Promise<DocumentType<MovieEntity>[]> {
@@ -63,7 +63,7 @@ export default class MovieService implements MovieServiceInterface {
     if (!isNullOrUndefined(limit)) {
       query = query.limit(limit);
     }
-    return query.exec();
+    return await query;
   }
 
   public async exists(documentId: string): Promise<boolean> {

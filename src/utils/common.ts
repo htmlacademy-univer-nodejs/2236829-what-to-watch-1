@@ -9,6 +9,12 @@ import { ServiceError } from '../types/service-error.enum.js';
 import { DEFAULT_STATIC_IMAGES } from '../app/application.constant.js';
 
 export function createMovie(str: string): Movie {
+  const values = str.replace('\n', '').split('\t');
+
+  if (values.length !== 19) {
+    throw new Error('Строка содержит неверное число значений');
+  }
+
   const [
     title,
     description,
@@ -29,11 +35,7 @@ export function createMovie(str: string): Movie {
     posterUri,
     backgroundImageUri,
     backgroundColor,
-  ] = str.split('\t');
-
-  if (typeof backgroundColor === 'undefined') {
-    throw new Error('Строка содержит недостаточно значений');
-  }
+  ] = values;
 
   if (!isGenre(genre)) {
     throw new Error('Параметр genre должен иметь тип Genre');
@@ -75,15 +77,23 @@ export function fillDto<T, V>(someDto: ClassConstructor<T>, plainObject: V[] | V
   return plainToInstance(someDto, plainObject, {excludeExtraneousValues: true});
 }
 
-export const createErrorObject = (serviceError: ServiceError, message: string, details: PropertyValidationError[] = []) => ({
+export const createErrorObject = (
+  serviceError: ServiceError,
+  message: string,
+  details: PropertyValidationError[] = []
+) => ({
   errorType: serviceError,
   message,
   details: [...details]
 });
 
-export const createJWT = async (algoritm: string, jwtSecret: string, payload: object): Promise<string> =>
+export const createJWT = async (
+  algorithm: string,
+  jwtSecret: string,
+  payload: object
+): Promise<string> =>
   new jose.SignJWT({...payload})
-    .setProtectedHeader({ alg: algoritm})
+    .setProtectedHeader({alg: algorithm})
     .setIssuedAt()
     .setExpirationTime('2d')
     .sign(crypto.createSecretKey(jwtSecret, 'utf-8'));

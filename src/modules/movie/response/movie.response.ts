@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { Genre } from '../../../types/genre.type';
 import UserResponse from '../../user/response/user.response';
 
@@ -47,5 +47,13 @@ export default class MovieResponse {
   public backgroundColor!: string;
 
   @Expose()
+  @Transform(({obj}) => MovieResponse.getRating(obj.ratingSum, obj.commentAmount))
   public rating!: number;
+
+  private static getRating(ratingSum: number, commentAmount: number): number {
+    if (!commentAmount) {
+      return 0;
+    }
+    return ratingSum / commentAmount;
+  }
 }

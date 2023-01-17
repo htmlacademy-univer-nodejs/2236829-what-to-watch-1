@@ -68,7 +68,7 @@ export default class MovieController extends Controller {
       path: '/:id/comments',
       method: HttpMethod.Post,
       handler: this.createComment,
-      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, validateCommentDtoMiddleware, movieExistsMiddleware]
+      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, movieExistsMiddleware, validateCommentDtoMiddleware]
     });
 
     this.addRoute({
@@ -82,24 +82,25 @@ export default class MovieController extends Controller {
       path: '/:id',
       method: HttpMethod.Put,
       handler: this.update,
-      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, validateUpdateMovieDtoMiddleware, movieExistsMiddleware]
+      middlewares: [authorizationMiddleware, validateObjectIdMiddleware, movieExistsMiddleware, validateUpdateMovieDtoMiddleware]
     });
 
     this.addRoute({
       path: '/:id',
       method: HttpMethod.Delete,
-      handler: this.deleteById,
+      handler: this.delete,
       middlewares: [authorizationMiddleware, validateObjectIdMiddleware, movieExistsMiddleware]
     });
   }
 
   public async getAll(
-    req: Request<Record<string, unknown>, MovieListItemResponse[], Record<string, unknown>, {genre?: Genre, limit?: number}>,
+    req: Request<Record<string, unknown>, MovieListItemResponse[], Record<string, unknown>, {genre?: Genre, limit?: string}>,
     res: Response<MovieListItemResponse[]>
   ): Promise<void> {
+    const limit = parseInt(req.query.limit ?? '60', 10);
     const movies = req.query.genre
-      ? await this.movieService.findByGenre(req.query.genre, req.query.limit)
-      : await this.movieService.getAll(req.query.limit);
+      ? await this.movieService.findByGenre(req.query.genre, limit)
+      : await this.movieService.getAll(limit);
     this.ok(res, fillDto(MovieListItemResponse, movies));
   }
 
@@ -108,14 +109,7 @@ export default class MovieController extends Controller {
     res: Response<MovieResponse>
   ): Promise<void> {
     const movie = await this.movieService.findById(req.params.id);
-    if (!movie) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        'Фильм не найден',
-        'MovieController',
-      );
-    }
-    this.ok(res, fillDto(MovieResponse, {...movie, rating: movie.rating}));
+    this.ok(res, fillDto(MovieResponse, movie));
   }
 
   public async getPromo(
@@ -130,37 +124,59 @@ export default class MovieController extends Controller {
         'MovieController',
       );
     }
-    this.ok(res, fillDto(MovieResponse, {...movie, rating: movie.rating}));
+    this.ok(res, fillDto(MovieResponse, movie));
   }
 
   public async create(
     req: Request<Record<string, unknown>, MovieResponse | ValidationError[], CreateMovieDto>,
     res: Response<MovieResponse | ValidationError[]>
   ): Promise<void> {
+    const existingMovie = await this.movieService.findByTitle(req.body.title);
+
+    if (existingMovie) {
+      throw new HttpError(
+        StatusCodes.CONFLICT,
+        `Фильм «${req.body.title}» уже существует`,
+        'MovieController',
+      );
+    }
+
     const result = await this.movieService.create(req.user.id, req.body);
-    this.created(res, fillDto(MovieResponse, {...result, rating: 0}));
+    this.created(res, fillDto(MovieResponse, result));
   }
 
   public async update(
     req: Request<{id: string}, MovieResponse | ValidationError[], UpdateMovieDto>,
     res: Response<MovieResponse | ValidationError[]>
   ): Promise<void> {
-    const result = await this.movieService.update(req.params.id, req.user.id, req.body);
-    if (!result) {
+    const existingMovie = await this.movieService.findById(req.params.id);
+
+    if (existingMovie?.user?.id !== req.user.id) {
       throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        'Фильм не найден',
+        StatusCodes.FORBIDDEN,
+        `Фильм «${req.body.title}» не принадлежит текущему пользователю`,
         'MovieController',
       );
     }
-    this.created(res, fillDto(MovieResponse, {...result, rating: result.rating}));
+
+    const result = await this.movieService.update(req.params.id, req.body);
+    this.created(res, fillDto(MovieResponse, result));
   }
 
-  public async deleteById(
+  public async delete(
     req: Request<{id: string}>,
     res: Response
   ): Promise<void> {
+    const existingMovie = await this.movieService.findById(req.params.id);
+    if (existingMovie?.user?.id !== req.user.id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        `Фильм «${req.body.title}» не принадлежит текущему пользователю`,
+        'MovieController',
+      );
+    }
     await this.movieService.deleteById(req.params.id);
+    await this.commentService.deleteByMovieId(req.params.id);
     this.noContent(res);
   }
 
@@ -177,13 +193,6 @@ export default class MovieController extends Controller {
     res: Response<CommentResponse | ValidationError[]>
   ): Promise<void> {
     const comment = await this.commentService.create(req.params.id, req.user.id, req.body);
-    if (!comment) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        'Комментарий не найден',
-        'MovieController',
-      );
-    }
     this.created(res, fillDto(CommentResponse, comment));
   }
 }

@@ -7,5 +7,9 @@ export interface MiddlewareInterface<
   ReqQuery = unknown,
   Locals extends Record<string, unknown> = Record<string, unknown>
 > {
-  execute(req: Request<P, ResBody, ReqBody, ReqQuery, Locals>, res: Response<ResBody, Locals>, next: NextFunction): void;
+  execute(
+    req: Request<P, ResBody, ReqBody, ReqQuery, Locals>,
+    res: Response<ResBody, Locals>,
+    next: NextFunction
+  ): void;
 }

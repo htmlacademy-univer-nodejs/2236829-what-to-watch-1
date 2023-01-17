@@ -1,4 +1,15 @@
-export const GENRES = ['comedy', 'crime', 'documentary', 'drama', 'horror', 'family', 'romance', 'scifi', 'thriller'] as const;
+export const GENRES = [
+  'comedy',
+  'crime',
+  'documentary',
+  'drama',
+  'horror',
+  'family',
+  'romance',
+  'scifi',
+  'thriller'
+] as const;
+
 
 export type Genre = typeof GENRES[number];
 

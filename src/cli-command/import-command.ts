@@ -11,7 +11,7 @@ import { UserServiceInterface } from '../modules/user/user-service.interface.js'
 import { UserModel } from '../modules/user/user.entity.js';
 import UserService from '../modules/user/user.service.js';
 import { Movie } from '../types/movie.type.js';
-import { createMovie } from '../utils/common.js';
+import { createMovie, getErrorMessage } from '../utils/common.js';
 import { getMongoDbURI } from '../utils/db.js';
 import { CliCommandInterface } from './cli-command.interface.js';
 
@@ -59,10 +59,7 @@ export default class ImportCommand implements CliCommandInterface {
     try {
       await fileReader.read();
     } catch (err) {
-      if (!(err instanceof Error)) {
-        throw err;
-      }
-      console.log(chalk.red(`Не удалось импортировать данные из файла «${filename}» по причине: «${err.message}»`));
+      console.log(chalk.red(`Не удалось импортировать данные из файла «${filename}» по причине: «${getErrorMessage(err)}»`));
     }
   }
 

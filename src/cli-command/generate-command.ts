@@ -4,6 +4,7 @@ import TSVFileWriter from '../common/file-writer/tsv-file-writer.js';
 import MovieGenerator from '../common/movie-generator/movie-generator.js';
 import { MockData } from '../types/mock-data.type.js';
 import { CliCommandInterface } from './cli-command.interface.js';
+import { getErrorMessage } from '../utils/common.js';
 
 export default class GenerateCommand implements CliCommandInterface {
   public readonly name = '--generate';
@@ -16,10 +17,7 @@ export default class GenerateCommand implements CliCommandInterface {
     try {
       initialData = await got.get(url).json();
     } catch (err) {
-      if (!(err instanceof Error)) {
-        throw err;
-      }
-      console.log(chalk.red(`Не удалось получить данные с адреса «${url}» по причине: «${err.message}»`));
+      console.log(chalk.red(`Не удалось получить данные с адреса «${url}» по причине: «${getErrorMessage(err)}»`));
       return;
     }
 

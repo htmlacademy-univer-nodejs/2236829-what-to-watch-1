@@ -9,7 +9,11 @@ import ValidationError from '../errors/validation-error.js';
 export class ValidateDtoMiddleware<Dto extends object> implements MiddlewareInterface<unknown, ValidationError[], Dto> {
   constructor(private dto: ClassConstructor<Dto>) {}
 
-  public async execute(req: Request<unknown, ValidationError[], Dto>, _res: Response<ValidationError[]>, next: NextFunction): Promise<void> {
+  public async execute(
+    req: Request<unknown, ValidationError[], Dto>,
+    _res: Response<ValidationError[]>,
+    next: NextFunction
+  ): Promise<void> {
     const dtoInstance = plainToInstance(this.dto, req.body);
     const errors = await validate(dtoInstance);
 

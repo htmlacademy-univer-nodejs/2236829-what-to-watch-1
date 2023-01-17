@@ -115,13 +115,13 @@ export const isObject = (value: unknown): value is Record<string, unknown> =>
 export const transformProperty = (
   property: string,
   object: Record<string, unknown>,
-  transformFn: (key: string, value: unknown) => unknown
+  transformFn: (value: unknown) => unknown
 ) => {
   Object.keys(object)
     .forEach((key) => {
       const value = object[key];
       if (key === property) {
-        object[key] = transformFn(key, value);
+        object[key] = transformFn(value);
         return;
       }
       if (isObject(value)) {
@@ -131,12 +131,15 @@ export const transformProperty = (
 };
 
 export const transformPathesInObject = (
-  properties: string[], staticPath: string, uploadPath: string, object: Record<string, unknown>
+  properties: string[],
+  staticPath: string,
+  uploadPath: string,
+  object: Record<string, unknown>
 ) => {
   properties
-    .forEach((property) => transformProperty(property, object, (_, value) => {
+    .forEach((property) => transformProperty(property, object, (value) => {
       if (typeof value !== 'string') {
-        return value;
+        throw new Error();
       }
       const rootPath = DEFAULT_STATIC_IMAGES.includes(value) ? staticPath : uploadPath;
       return `${rootPath}/${value}`;

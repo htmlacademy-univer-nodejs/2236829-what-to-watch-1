@@ -19,24 +19,20 @@ export default class MovieService implements MovieServiceInterface {
   ) {}
 
   public async create(userId: string, dto: CreateMovieDto): Promise<DocumentType<MovieEntity>> {
-    const result = await this.movieModel.create({...dto, user: userId});
+    const result = await (await this.movieModel.create({...dto, user: userId})).populate('user');
     this.logger.info(`Создан фильм: ${dto.title}`);
 
     return result;
   }
 
-  public async update(id: string, userId: string, dto: UpdateMovieDto): Promise<DocumentType<MovieEntity> | null> {
+  public async update(id: string, dto: UpdateMovieDto): Promise<DocumentType<MovieEntity> | null> {
     const movie = await this.findById(id);
     if (!movie) {
       this.logger.info(`Фильм не был изменён, так как не существует: ${dto.title}`);
       return null;
     }
-    if (movie.user?.toString() !== userId) {
-      this.logger.info(`Фильм не был изменён, так как не принадлежит пользователю: ${movie.title}, ${userId}`);
-      return null;
-    }
 
-    const result = await this.movieModel.findOneAndReplace({_id: id}, {...dto, user: userId}, {new: true});
+    const result = await this.movieModel.findOneAndReplace({_id: id}, dto, {new: true}).populate('user');
     this.logger.info(`Изменён фильм: ${movie.title} → ${dto.title}`);
 
     return result;
@@ -47,11 +43,15 @@ export default class MovieService implements MovieServiceInterface {
   }
 
   public async findById(id: string): Promise<DocumentType<MovieEntity> | null> {
-    return this.movieModel.findById(id);
+    return await this.movieModel.findById(id).populate('user');
+  }
+
+  public async findByTitle(title: string): Promise<DocumentType<MovieEntity> | null> {
+    return await this.movieModel.findOne({title}).populate('user');
   }
 
   public async getAll(limit? : number): Promise<DocumentType<MovieEntity>[]> {
-    let query = this.movieModel.find().populate(['userId']);
+    let query = this.movieModel.find().sort({publicationDate: 'desc'}).populate('user');
     if (!isNullOrUndefined(limit)) {
       query = query.limit(limit);
     }
@@ -59,7 +59,7 @@ export default class MovieService implements MovieServiceInterface {
   }
 
   public async findByGenre(genre: Genre, limit?: number): Promise<DocumentType<MovieEntity>[]> {
-    let query = this.movieModel.find({genre}).populate(['userId']);
+    let query = this.movieModel.find({genre}).sort({publicationDate: 'desc'}).populate('user');
     if (!isNullOrUndefined(limit)) {
       query = query.limit(limit);
     }

@@ -20,6 +20,7 @@
     "mock:server": "json-server ./mocks/mock-server-data.json --port 3123"
   },
   "devDependencies": {
+    "@typegoose/typegoose": "9.8.1",
     "@types/convict": "6.1.1",
     "@types/convict-format-with-validator": "6.0.2",
     "@types/cors": "2.8.12",
@@ -44,7 +45,6 @@
     "npm": "^8.1.0"
   },
   "dependencies": {
-    "@typegoose/typegoose": "9.8.1",
     "chalk": "5.0.1",
     "class-transformer": "0.5.1",
     "class-validator": "0.13.2",

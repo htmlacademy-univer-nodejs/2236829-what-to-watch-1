@@ -12,15 +12,18 @@ export default class WatchLaterService implements WatchLaterServiceInterface {
   ) {}
 
   public async getWatchLater(userId: string): Promise<DocumentType<WatchLaterEntity> | null> {
-    const result = await this.WatchLaterModel.findOne({userId}).populate('list').exec();
+    const result = await this.WatchLaterModel.findOne({userId})
+      .populate('list')
+      .populate({path:'list', populate: {path: 'user'}})
+      .exec();
     return result;
   }
 
   public async addToWatchLater(userId: string, movieId: string): Promise<void> {
-    await this.WatchLaterModel.findByIdAndUpdate(userId, {$addToSet: {list: movieId}}, {upsert: true, new: true});
+    await this.WatchLaterModel.findOneAndUpdate({userId}, {$addToSet: {list: movieId}}, {upsert: true, new: true});
   }
 
   public async deleteFromWatchLater(userId: string, movieId: string): Promise<void> {
-    await this.WatchLaterModel.findByIdAndUpdate(userId, {$pull: {list: movieId}}, {upsert: true, new: true});
+    await this.WatchLaterModel.findOneAndUpdate({userId}, {$pull: {list: movieId}}, {upsert: true, new: true});
   }
 }

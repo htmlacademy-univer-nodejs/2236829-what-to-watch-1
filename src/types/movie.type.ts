@@ -4,7 +4,7 @@ import { User } from './user.type.js';
 export type Movie = {
   title: string;
   description: string;
-  publicationDate: Date;
+  publicationDate: string;
   genre: Genre;
   releaseYear: number;
   rating: number;

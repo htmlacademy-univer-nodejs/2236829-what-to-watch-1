@@ -41,7 +41,7 @@ export function createMovie(str: string): Movie {
   return {
     title,
     description,
-    publicationDate: new Date(publicationDate),
+    publicationDate,
     genre: genre,
     releaseYear: parseInt(releaseYear, 10),
     rating: 0,

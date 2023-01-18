@@ -93,12 +93,8 @@ paths:
       summary: Проверка состояния пользователя
       description: Возвращает информацию об авторизованном пользователе
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       responses:
         "200":
@@ -117,12 +113,8 @@ paths:
         - users
       summary: Загрузка аватара пользователя
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       requestBody:
         content:
@@ -149,12 +141,8 @@ paths:
       summary: Добавление нового фильма
       description: Добавляет новый фильм
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       requestBody:
         description: Информация для добавления нового фильма
@@ -246,13 +234,10 @@ paths:
       summary: Редактирование информации о фильме
       description: Редактирует информацию о фильме
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
+      parameters:
         - in: path
           name: movieId
           schema:
@@ -292,13 +277,10 @@ paths:
       summary: Удаление информации о фильме
       description: Удаляет информацию о фильме
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
+      parameters:
         - in: path
           name: movieId
           schema:
@@ -339,12 +321,8 @@ paths:
       summary: Получение списка фильмов «К просмотру»
       description: Получает список фильмов «К просмотру»
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       responses:
         "200":
@@ -365,12 +343,8 @@ paths:
       summary: Добавление фильма в список "К просмотру"
       description: Добавляет фильм в список "К просмотру"
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       requestBody:
         description: Идентификатор фильма
@@ -400,12 +374,8 @@ paths:
       summary: Удаление фильма из списка "К просмотру"
       description: Удаляет фильм из списка "К просмотру"
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       requestBody:
         description: Идентификатор фильма
@@ -467,13 +437,10 @@ paths:
       summary: Добавить новый комментарий к заданному фильму
       description: Добавляет новый комментарий к заданному фильму
 
-      parameters:
-        - in: header
-          name: Authorization
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
+      parameters:
         - in: path
           name: movieId
           schema:
@@ -875,3 +842,10 @@ components:
 
       required:
         - avatarUri
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: В формате '`JWT`', без префикса '`Bearer`'
+      bearerFormat: JWT

@@ -112,7 +112,7 @@ export default class UserController extends Controller {
       {email: user.email, id: user.id}
     );
 
-    this.ok(res, fillDto(LoggedUserResponse, {...user, token}));
+    this.ok(res, {...fillDto(LoggedUserResponse, user), token});
   }
 
   public async getCurrentUser(

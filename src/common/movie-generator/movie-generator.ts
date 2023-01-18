@@ -11,13 +11,11 @@ export default class MovieGenerator implements MovieGeneratorInterface {
     const publicationDate = getRandomItem(this.mockData.publicationDates);
     const genre = getRandomItem(this.mockData.genres);
     const releaseYear = getRandomItem(this.mockData.releaseYears);
-    const rating = getRandomItem(this.mockData.ratings);
     const videoPreviewUri = getRandomItem(this.mockData.videoPreviewUris);
     const videoUri = getRandomItem(this.mockData.videoUris);
     const cast = getRandomSlice(this.mockData.casts).join(',');
     const producer = getRandomItem(this.mockData.producers);
     const duration = getRandomItem(this.mockData.durations);
-    const commentAmount = getRandomItem(this.mockData.commentAmounts);
     const userName = getRandomItem(this.mockData.userNames);
     const userAvatarUri = getRandomItem(this.mockData.userAvatarUris);
     const userEmail = getRandomItem(this.mockData.userEmails);
@@ -31,13 +29,11 @@ export default class MovieGenerator implements MovieGeneratorInterface {
       publicationDate,
       genre,
       releaseYear,
-      rating,
       videoPreviewUri,
       videoUri,
       cast,
       producer,
       duration,
-      commentAmount,
       userName,
       userAvatarUri,
       userEmail,

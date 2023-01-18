@@ -11,7 +11,7 @@ import { DEFAULT_STATIC_IMAGES } from '../app/application.constant.js';
 export function createMovie(str: string): Movie {
   const values = str.replace('\n', '').split('\t');
 
-  if (values.length !== 18) {
+  if (values.length !== 16) {
     throw new Error('Строка содержит неверное число значений');
   }
 
@@ -21,13 +21,11 @@ export function createMovie(str: string): Movie {
     publicationDate,
     genre,
     releaseYear,
-    rating,
     videoPreviewUri,
     videoUri,
     cast,
     producer,
     duration,
-    commentAmount,
     userName,
     userAvatarUri,
     userEmail,
@@ -46,13 +44,13 @@ export function createMovie(str: string): Movie {
     publicationDate: new Date(publicationDate),
     genre: genre,
     releaseYear: parseInt(releaseYear, 10),
-    rating: parseFloat(rating),
+    rating: 0,
     videoPreviewUri,
     videoUri,
     cast: cast.split(','),
     producer,
     duration: parseInt(duration, 10),
-    commentAmount: parseInt(commentAmount, 10),
+    commentAmount: 0,
     user: {
       name: userName,
       avatarUri: userAvatarUri,

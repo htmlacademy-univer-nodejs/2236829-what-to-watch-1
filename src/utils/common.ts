@@ -137,7 +137,7 @@ export const transformPathesInObject = (
   properties
     .forEach((property) => transformProperty(property, object, (value) => {
       if (typeof value !== 'string') {
-        throw new Error();
+        throw new Error(`Ожидалось, что значение поля ${property} будет строкой`);
       }
       const rootPath = DEFAULT_STATIC_IMAGES.includes(value) ? staticPath : uploadPath;
       return `${rootPath}/${value}`;

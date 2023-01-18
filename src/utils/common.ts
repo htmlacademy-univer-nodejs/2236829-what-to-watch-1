@@ -6,7 +6,7 @@ import { Movie } from '../types/movie.type.js';
 import { ValidationError } from 'class-validator';
 import { PropertyValidationError } from '../types/property-validation-error.type.js';
 import { ServiceError } from '../types/service-error.enum.js';
-import { DEFAULT_STATIC_IMAGES } from '../app/application.constant.js';
+import { DEFAULT_STATIC_FILES } from '../app/application.constant.js';
 
 export function createMovie(str: string): Movie {
   const values = str.replace('\n', '').split('\t');
@@ -139,7 +139,7 @@ export const transformPathesInObject = (
       if (typeof value !== 'string') {
         throw new Error(`Ожидалось, что значение поля ${property} будет строкой`);
       }
-      const rootPath = DEFAULT_STATIC_IMAGES.includes(value) ? staticPath : uploadPath;
+      const rootPath = DEFAULT_STATIC_FILES.includes(value) ? staticPath : uploadPath;
       return `${rootPath}/${value}`;
     }));
 };

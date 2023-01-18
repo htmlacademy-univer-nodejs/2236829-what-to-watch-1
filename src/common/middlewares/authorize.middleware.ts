@@ -9,7 +9,7 @@ export class AuthorizeMiddleware implements MiddlewareInterface {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
         'Unauthorized',
-        'AuthorizationMiddleware'
+        'AuthorizeMiddleware'
       );
     }
 

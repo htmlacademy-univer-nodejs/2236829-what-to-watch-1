@@ -27,11 +27,11 @@ export default class UserService implements UserServiceInterface {
   }
 
   public async findById(id: string): Promise<DocumentType<UserEntity, types.BeAnObject> | null> {
-    return this.userModel.findById(id);
+    return await this.userModel.findById(id);
   }
 
   public async findByEmail(email: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel.findOne({email});
+    return await this.userModel.findOne({email}).exec();
   }
 
   public async findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
@@ -41,7 +41,13 @@ export default class UserService implements UserServiceInterface {
       return existedUser;
     }
 
-    return this.create(dto, salt);
+    return await this.create(dto, salt);
+  }
+
+  public async updateAvatar(id: string, avatarUri: string): Promise<DocumentType<UserEntity> | null> {
+    return await this.userModel
+      .findByIdAndUpdate(id, {avatarUri}, {new: true})
+      .exec();
   }
 
   public async verifyUser(dto: LoginUserDto, salt: string): Promise<DocumentType<UserEntity> | null> {

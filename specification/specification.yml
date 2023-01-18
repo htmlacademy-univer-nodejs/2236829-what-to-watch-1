@@ -5,6 +5,9 @@ info:
   description: Список ресурсов и маршрутов сервера «Что посмотреть»
   version: 1.0.0
 
+servers:
+  - url: http://localhost:4200/
+
 tags:
   - name: users
     description: Действия с пользователем
@@ -12,6 +15,8 @@ tags:
     description: Действия с фильмами
   - name: comments
     description: Действия с комментариями
+  - name: watch-later
+    description: Действия с коллекцией "Смотреть позже"
 
 paths:
   /users/register:
@@ -40,7 +45,7 @@ paths:
         "409":
           description: Пользователь с таким email уже существует
 
-        "422":
+        "400":
           description: Объект пользователя не прошёл валидацию
 
   /users/login:
@@ -59,25 +64,25 @@ paths:
               type: object
 
               properties:
-                login:
+                email:
                   type: string
                   format: email
                   example: some@mail.ru
 
                 password:
                   type: string
-                  format: password
+                  minLength: 6
+                  maxLength: 12
                   example: somepass
 
       responses:
         "200":
-          description: Успешно. Пользователь зарегистрирован. Объект пользователя
-          headers:
-            Set-Cookie:
+          description: Успешно. Пользователь авторизован. Объект пользователя
+          content:
+            application/json:
               schema:
-                type: string
-                description: Токен используемый для авторизации
-                example: SESSIONID=sessid; Path=/; HttpOnly
+                $ref: '#/components/schemas/user'
+                description: Информация о пользователе и токен используемый для авторизации
 
         "401":
           description: Неправильные пароль или логин
@@ -88,12 +93,8 @@ paths:
       summary: Проверка состояния пользователя
       description: Возвращает информацию об авторизованном пользователе
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       responses:
         "200":
@@ -103,29 +104,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/user'
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
-  /users/logout:
-    post:
+  /users/login/avatar:
+    put:
       tags:
         - users
-      summary: Авторизация пользователя
-      description: Авторизует пользователя
+      summary: Загрузка аватара пользователя
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
+
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
 
       responses:
-        "204":
-          description: Успешно. Пользователь деавторизован
+        "201":
+          description: Успешно. Аватар добавлен. Ссылка на аватар
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/uploadAvatar'
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
   /movies:
     post:
@@ -134,12 +144,8 @@ paths:
       summary: Добавление нового фильма
       description: Добавляет новый фильм
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       requestBody:
         description: Информация для добавления нового фильма
@@ -157,12 +163,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/movie'
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
-        "422":
+        "400":
           description: Объект фильма не прошёл валидацию
 
+    get:
+      tags:
+        - movies
+      summary: Получение списка фильмов
+      description: Получает список фильмов не больше указанного количества указанного жанра
+
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 0
+            example: 60
+            default: 60
+          description: Максимальное требуемое количество вхождений в запрошенный список
+
+        - in: query
+          name: genre
+          schema:
+            $ref: '#/components/schemas/genre'
+          description: Жанр, к которому должны относиться все вхождения в запрошенном списке
+
+      responses:
+        "200":
+          description: Успешно. Список фильмов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/movieListItem'
+
+        "400":
+          description: Запрошено невалидное количество фильмов
 
   /movies/{movieId}:
     get:
@@ -176,7 +216,7 @@ paths:
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -197,18 +237,15 @@ paths:
       summary: Редактирование информации о фильме
       description: Редактирует информацию о фильме
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
+      parameters:
         - in: path
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -228,13 +265,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/movie'
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
         "404":
           description: Фильм с указанным идентификатором не существует
 
-        "422":
+        "400":
           description: Объект, описывающий изменения, производимые над объектом фильма, не прошёл валидацию
 
     delete:
@@ -243,18 +280,15 @@ paths:
       summary: Удаление информации о фильме
       description: Удаляет информацию о фильме
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
+      parameters:
         - in: path
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -262,75 +296,11 @@ paths:
         "204":
           description: Успешно. Фильм удалён
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
         "404":
           description: Фильм с указанным идентификатором не существует
-
-  /movies?limit=60&genre:
-    get:
-      tags:
-        - movies
-      summary: Получение списка фильмов
-      description: Получает список фильмов не больше указанного количества указанных жанров
-
-      parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 0
-            example: 60
-          description: Максимальное требуемое количество вхождений в запрошенный список
-
-        - in: query
-          name: genre
-          schema:
-            $ref: '#/components/schemas/genre'
-          description: Жанр, к которому должны относиться все вхождения в запрошенном списке
-
-      responses:
-        "200":
-          description: Успешно. Список фильмов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/movieListItem'
-
-        "422":
-          description: Запрошено невалидное количество фильмов или фильмы несуществующего жанра
-
-  /movies?limit=60:
-    get:
-      tags:
-        - movies
-      summary: Получение списка фильмов
-      description: Получает список фильмов не больше указанного количества всех жанров
-
-      parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 0
-            example: 60
-          description: Максимальное требуемое количество вхождений в запрошенный список
-
-      responses:
-        "200":
-          description: Успешно. Список фильмов
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/movieListItem'
-
-        "422":
-          description: Запрошено невалидное количество фильмов
 
   /movies/promo:
     get:
@@ -347,19 +317,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/movie'
 
-  /movies/to-watch:
+  /watch-later:
     get:
       tags:
-        - movies
+        - watch-later
       summary: Получение списка фильмов «К просмотру»
       description: Получает список фильмов «К просмотру»
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       responses:
         "200":
@@ -371,21 +337,17 @@ paths:
                 items:
                   $ref: '#/components/schemas/movieListItem'
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
     post:
       tags:
-        - movies
+        - watch-later
       summary: Добавление фильма в список "К просмотру"
       description: Добавляет фильм в список "К просмотру"
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       requestBody:
         description: Идентификатор фильма
@@ -397,32 +359,26 @@ paths:
               properties:
                 movieId:
                   type: string
-                  format: uuid
-                  example: 00000000-0000-0000-0000-000000000000
+                  example: 63c73e327c6f3f1f3475e54b
 
               required:
                 - movieId
 
       responses:
-        "201":
+        "204":
           description: Успешно. Фильм добавлен в список "К просмотру"
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
-  /movies/to-watch/{movieId}:
     delete:
       tags:
-        - movies
+        - watch-later
       summary: Удаление фильма из списка "К просмотру"
       description: Удаляет фильм из списка "К просмотру"
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
       requestBody:
         description: Идентификатор фильма
@@ -434,8 +390,7 @@ paths:
               properties:
                 movieId:
                   type: string
-                  format: uuid
-                  example: 00000000-0000-0000-0000-000000000000
+                  example: 63c73e327c6f3f1f3475e54b
 
               required:
                 - movieId
@@ -444,8 +399,8 @@ paths:
         "204":
           description: Успешно. Фильм удален из списка "К просмотру"
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
         "404":
           description: Список "К просмотру" не содержит фильм с указанным идентификатором
@@ -462,7 +417,7 @@ paths:
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -485,18 +440,15 @@ paths:
       summary: Добавить новый комментарий к заданному фильму
       description: Добавляет новый комментарий к заданному фильму
 
-      parameters:
-        - in: cookie
-          name: SESSIONID
-          required: true
-          schema:
-            type: string
+      security:
+        - bearerAuth: []
 
+      parameters:
         - in: path
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -505,7 +457,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/comment'
+              $ref: '#/components/schemas/createComment'
 
       responses:
         "200":
@@ -515,13 +467,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/comment'
 
-        "403":
-          description: SESSIONID содержит неверный токен
+        "401":
+          description: Заголовок Authorization содержит неверный токен
 
         "404":
           description: Фильм с заданным идентификатором не существует
 
-        "422":
+        "400":
           description: Объект комментария не прошёл валидацию
 
 components:
@@ -548,32 +500,69 @@ components:
       properties:
         email:
           type: string
+          format: email
           example: some@mail.ru
 
         name:
           type: string
+          minLength: 1
+          maxLength: 15
           example: Name
 
         password:
           type: string
-          format: password
+          minLength: 6
+          maxLength: 12
           example: somepass
 
         avatarUri:
           type: string
-          format: url
+          example: example.jpg
+
+      required:
+        - "email"
+        - "name"
+        - "password"
 
     user:
       type: object
 
       properties:
-        id:
+        name:
           type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
+          minLength: 1
+          maxLength: 15
+          example: Name
+
+        avatarUri:
+          type: string
+          example: example.jpg
 
         email:
           type: string
+          format: email
+          example: some@mail.ru
+
+    loggedUser:
+      type: object
+
+      properties:
+        token:
+          type: string
+
+        name:
+          type: string
+          minLength: 1
+          maxLength: 15
+          example: Name
+
+        avatarUri:
+          type: string
+          example: example.jpg
+
+        email:
+          type: string
+          format: email
           example: some@mail.ru
 
     createMovie:
@@ -606,17 +595,16 @@ components:
 
         videoPreviewUri:
           type: string
-          format: url
+          example: example.mp4
 
         videoUri:
           type: string
-          format: url
+          example: example.mp4
 
         cast:
           type: array
           items:
             type: string
-          minItems: 1
           uniqueItems: true
           example: ["Актёр", "Актьор"]
 
@@ -632,14 +620,10 @@ components:
 
         posterUri:
           type: string
-          format: uri
-          pattern: ^\S+\.jpg$
           example: example.jpg
 
         backgroundImageUri:
           type: string
-          format: uri
-          pattern: ^\S+\.jpg$
           example: example.jpg
 
         backgroundColor:
@@ -649,7 +633,6 @@ components:
       required:
         - title
         - description
-        - publicationDate
         - genre
         - releaseYear
         - videoPreviewUri
@@ -697,17 +680,16 @@ components:
 
         videoPreviewUri:
           type: string
-          format: url
+          example: example.mp4
 
         videoUri:
           type: string
-          format: url
+          example: example.mp4
 
         cast:
           type: array
           items:
             type: string
-          minItems: 1
           uniqueItems: true
           example: ["Актёр", "Актьор"]
 
@@ -730,14 +712,10 @@ components:
 
         posterUri:
           type: string
-          format: uri
-          pattern: ^\S+\.jpg$
           example: example.jpg
 
         backgroundImageUri:
           type: string
-          format: uri
-          pattern: ^\S+\.jpg$
           example: example.jpg
 
         backgroundColor:
@@ -763,15 +741,7 @@ components:
         - backgroundColor
 
     updateMovie:
-      allOf:
-        - $ref: '#/components/schemas/createMovie'
-        - type: object
-          properties:
-            movieId:
-              type: string
-              format: uuid
-          required:
-            - movieId
+      $ref: '#/components/schemas/createMovie'
 
     movieListItem:
       type: object
@@ -793,15 +763,13 @@ components:
 
         videoPreviewUri:
           type: string
-          format: url
+          example: example.mp4
 
         user:
           $ref: '#/components/schemas/user'
 
         posterUri:
           type: string
-          format: uri
-          pattern: ^\S+\.jpg$
           example: example.jpg
 
         commentAmount:
@@ -831,7 +799,7 @@ components:
           minimum: 0
           maximum: 10
 
-        publicationDate:
+        date:
           type: string
           format: date-time
           example: 2033-11-22T11:22:33.000Z
@@ -843,3 +811,44 @@ components:
         - text
         - rating
         - user
+
+    createComment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          minLength: 5
+          maxLength: 1024
+
+        rating:
+          type: integer
+          minimum: 0
+          maximum: 10
+
+        date:
+          type: string
+          format: date-time
+          example: 2033-11-22T11:22:33.000Z
+
+      required:
+        - text
+        - rating
+
+    uploadAvatar:
+      type: object
+
+      properties:
+        avatarUri:
+          type: string
+          example: example.jpg
+
+      required:
+        - avatarUri
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: В формате '`JWT`', без префикса '`Bearer`'
+      bearerFormat: JWT

@@ -20,14 +20,14 @@ export default class CommentService implements CommentServiceInterface {
     if (!movie) {
       return null;
     }
-    const comment = await this.commentModel.create({movieId, userId, ...dto});
-    return comment.populate('userId');
+    const comment = await this.commentModel.create({movieId, user: userId, ...dto});
+    return comment.populate('user');
   }
 
   public async findByMovieId(movieId: string): Promise<DocumentType<CommentEntity>[]> {
     return this.commentModel
       .find({movieId})
-      .populate('userId');
+      .populate('user');
   }
 
   public async deleteByMovieId(movieId: string): Promise<number> {

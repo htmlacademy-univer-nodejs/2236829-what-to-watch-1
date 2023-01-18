@@ -22,14 +22,17 @@ export class CommentEntity extends defaultClasses.TimeStamps {
   })
   public rating!: number;
 
-  @prop({ required: true })
+  @prop({
+    required: true,
+    default: () => new Date()
+  })
   public date!: Date;
 
   @prop({
     ref: UserEntity,
     required: true
   })
-  public userId!: Ref<UserEntity>;
+  public user!: Ref<UserEntity>;
 
   @prop({
     ref: MovieEntity,

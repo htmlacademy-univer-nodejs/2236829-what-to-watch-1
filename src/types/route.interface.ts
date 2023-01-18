@@ -5,6 +5,10 @@ import { MiddlewareInterface } from './middleware.interface.js';
 export interface RouteInterface<P, ResBody, ReqBody, ReqQuery, Locals extends Record<string, unknown>> {
   path: string;
   method: HttpMethod;
-  handler: (req: Request<P, ResBody, ReqBody, ReqQuery, Locals>, res: Response<ResBody, Locals>, next: NextFunction) => void;
+  handler: (
+    req: Request<P, ResBody, ReqBody, ReqQuery, Locals>,
+    res: Response<ResBody, Locals>,
+    next: NextFunction
+  ) => void;
   middlewares?: MiddlewareInterface<P, ResBody, ReqBody, ReqQuery, Locals>[];
 }

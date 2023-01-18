@@ -2,7 +2,7 @@ import typegoose, { getModelForClass, defaultClasses, Ref } from '@typegoose/typ
 import { Genre, GENRES } from '../../types/genre.type.js';
 import { UserEntity } from '../user/user.entity.js';
 
-const { prop, modelOptions } = typegoose;
+const {prop, modelOptions} = typegoose;
 
 export interface MovieEntity extends defaultClasses.Base {}
 
@@ -13,26 +13,26 @@ export interface MovieEntity extends defaultClasses.Base {}
 })
 export class MovieEntity extends defaultClasses.TimeStamps {
   @prop({
+    trim: true,
     required: true,
     minlength: 2,
-    maxlength: 100,
-    default: ''
+    maxlength: 100
   })
   public title!: string;
 
   @prop({
+    trim: true,
     required: true,
     minlength: 20,
-    maxlength: 1024,
-    default: ''
+    maxlength: 1024
   })
   public description!: string;
 
   @prop({
     required: true,
-    default: Date.now
+    default: () => new Date()
   })
-  public publicationDate!: string;
+  public publicationDate!: Date;
 
   @prop({
     required: true,
@@ -45,10 +45,8 @@ export class MovieEntity extends defaultClasses.TimeStamps {
   public releaseYear!: number;
 
   @prop({
-    required: true,
     default: 0,
-    min: 0,
-    max: 10
+    min: 0
   })
   public ratingSum!: number;
 
@@ -68,8 +66,7 @@ export class MovieEntity extends defaultClasses.TimeStamps {
   @prop({
     required: true,
     minlength: 2,
-    maxlength: 50,
-    default: ''
+    maxlength: 50
   })
   public producer!: string;
 
@@ -77,7 +74,6 @@ export class MovieEntity extends defaultClasses.TimeStamps {
   public duration!: number;
 
   @prop({
-    required: true,
     default: 0,
     min: 0
   })
@@ -87,18 +83,12 @@ export class MovieEntity extends defaultClasses.TimeStamps {
     ref: UserEntity,
     required: true
   })
-  public userId!: Ref<UserEntity>;
+  public user!: Ref<UserEntity>;
 
-  @prop({
-    required: true,
-    match: /^\S+\.jpg$/
-  })
+  @prop({ required: true })
   public posterUri!: string;
 
-  @prop({
-    required: true,
-    match: /^\S+\.jpg$/
-  })
+  @prop({ required: true })
   public backgroundImageUri!: string;
 
   @prop({ required: true })

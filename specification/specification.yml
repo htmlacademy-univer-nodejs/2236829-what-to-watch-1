@@ -5,6 +5,9 @@ info:
   description: Список ресурсов и маршрутов сервера «Что посмотреть»
   version: 1.0.0
 
+servers:
+  - url: http://localhost:4200/
+
 tags:
   - name: users
     description: Действия с пользователем
@@ -68,7 +71,6 @@ paths:
 
                 password:
                   type: string
-                  format: password
                   minLength: 6
                   maxLength: 12
                   example: somepass
@@ -80,7 +82,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/user'
-                type: string
                 description: Информация о пользователе и токен используемый для авторизации
 
         "401":
@@ -107,7 +108,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/user'
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
   /users/login/avatar:
@@ -122,7 +123,6 @@ paths:
           required: true
           schema:
             type: string
-            format: jwt
 
       requestBody:
         content:
@@ -139,7 +139,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/uploadAvatar'
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
   /movies:
@@ -172,7 +172,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/movie'
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
         "400":
@@ -225,7 +225,7 @@ paths:
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -257,7 +257,7 @@ paths:
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -277,7 +277,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/movie'
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
         "404":
@@ -303,7 +303,7 @@ paths:
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -311,7 +311,7 @@ paths:
         "204":
           description: Успешно. Фильм удалён
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
         "404":
@@ -356,7 +356,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/movieListItem'
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
     post:
@@ -382,8 +382,7 @@ paths:
               properties:
                 movieId:
                   type: string
-                  format: uuid
-                  example: 00000000-0000-0000-0000-000000000000
+                  example: 63c73e327c6f3f1f3475e54b
 
               required:
                 - movieId
@@ -392,7 +391,7 @@ paths:
         "201":
           description: Успешно. Фильм добавлен в список "К просмотру"
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
     delete:
@@ -418,8 +417,7 @@ paths:
               properties:
                 movieId:
                   type: string
-                  format: uuid
-                  example: 00000000-0000-0000-0000-000000000000
+                  example: 63c73e327c6f3f1f3475e54b
 
               required:
                 - movieId
@@ -428,7 +426,7 @@ paths:
         "204":
           description: Успешно. Фильм удален из списка "К просмотру"
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
         "404":
@@ -446,7 +444,7 @@ paths:
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -480,7 +478,7 @@ paths:
           name: movieId
           schema:
             type: string
-            format: uuid
+            example: 63c73e327c6f3f1f3475e54b
           required: true
           description: Идентификатор фильма
 
@@ -499,7 +497,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/comment'
 
-        "403":
+        "401":
           description: Заголовок Authorization содержит неверный токен
 
         "404":
@@ -543,14 +541,12 @@ components:
 
         password:
           type: string
-          format: password
           minLength: 6
           maxLength: 12
           example: somepass
 
         avatarUri:
           type: string
-          format: url
           example: example.jpg
 
       required:
@@ -570,7 +566,6 @@ components:
 
         avatarUri:
           type: string
-          format: url
           example: example.jpg
 
         email:
@@ -593,13 +588,13 @@ components:
 
         avatarUri:
           type: string
-          format: url
           example: example.jpg
 
         email:
           type: string
           format: email
           example: some@mail.ru
+
     createMovie:
       type: object
 
@@ -630,12 +625,10 @@ components:
 
         videoPreviewUri:
           type: string
-          format: url
           example: example.mp4
 
         videoUri:
           type: string
-          format: url
           example: example.mp4
 
         cast:
@@ -657,12 +650,10 @@ components:
 
         posterUri:
           type: string
-          format: url
           example: example.jpg
 
         backgroundImageUri:
           type: string
-          format: url
           example: example.jpg
 
         backgroundColor:
@@ -719,12 +710,10 @@ components:
 
         videoPreviewUri:
           type: string
-          format: url
           example: example.mp4
 
         videoUri:
           type: string
-          format: url
           example: example.mp4
 
         cast:
@@ -753,12 +742,10 @@ components:
 
         posterUri:
           type: string
-          format: url
           example: example.jpg
 
         backgroundImageUri:
           type: string
-          format: url
           example: example.jpg
 
         backgroundColor:
@@ -784,9 +771,7 @@ components:
         - backgroundColor
 
     updateMovie:
-      allOf:
-        - $ref: '#/components/schemas/createMovie'
-        - type: object
+      $ref: '#/components/schemas/createMovie'
 
     movieListItem:
       type: object
@@ -808,7 +793,6 @@ components:
 
         videoPreviewUri:
           type: string
-          format: url
           example: example.mp4
 
         user:
@@ -816,7 +800,6 @@ components:
 
         posterUri:
           type: string
-          format: url
           example: example.jpg
 
         commentAmount:
@@ -888,7 +871,6 @@ components:
       properties:
         avatarUri:
           type: string
-          format: url
           example: example.jpg
 
       required:

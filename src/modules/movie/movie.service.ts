@@ -32,7 +32,7 @@ export default class MovieService implements MovieServiceInterface {
       return null;
     }
 
-    const result = await this.movieModel.findOneAndReplace({_id: id}, dto, {new: true}).populate('user');
+    const result = await this.movieModel.findOneAndReplace({_id: id}, {...dto, user: movie.user}, {new: true}).populate('user');
     this.logger.info(`Изменён фильм: ${movie.title} → ${dto.title}`);
 
     return result;

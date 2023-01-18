@@ -1,5 +1,5 @@
 import { IsArray, IsDateString, IsIn, IsInt, MaxLength, MinLength, IsNumber, Min, IsString } from 'class-validator';
-import { Genre, GENRES } from '../../../types/genre.type';
+import { Genre, GENRES } from '../../../types/genre.type.js';
 
 export default class CreateMovieDto {
   @MinLength(2, {message: 'Поле title не может иметь длину меньше 2'})

@@ -1,5 +1,5 @@
 import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
-import { DEFAULT_AVATAR_FILE_NAME } from '../user.constant';
+import { DEFAULT_AVATAR_FILE_NAME } from '../user.constant.js';
 
 export default class CreateUserDto {
   @MinLength(1, {message: 'Поле name не может иметь длину меньше 1'})

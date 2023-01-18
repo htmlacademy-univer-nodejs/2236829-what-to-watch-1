@@ -1,6 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { Genre } from '../../../types/genre.type';
-import UserResponse from '../../user/response/user.response';
+import { Genre } from '../../../types/genre.type.js';
+import UserResponse from '../../user/response/user.response.js';
 
 export default class MovieResponse {
   @Expose()

@@ -98,6 +98,13 @@ export default class MovieController extends Controller {
     res: Response<MovieListItemResponse[]>
   ): Promise<void> {
     const limit = parseInt(req.query.limit ?? '60', 10);
+    if (limit < 0) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Запрошено невалидное количество фильмов',
+        'MovieController'
+      );
+    }
     const movies = req.query.genre
       ? await this.movieService.findByGenre(req.query.genre, limit)
       : await this.movieService.getAll(limit);

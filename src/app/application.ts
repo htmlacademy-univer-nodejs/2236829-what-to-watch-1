@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { LoggerInterface } from '../common/logger/logger.interface.js';
 import { ConfigInterface } from '../common/config/config.interface.js';
 import { inject, injectable } from 'inversify';
-import express, { Express } from 'express';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import { Component } from '../types/component.type.js';
 import { getMongoDbURI } from '../utils/db.js';
 import { DatabaseInterface } from '../common/database-client/database.interface.js';
@@ -51,7 +51,10 @@ export default class Application {
   }
 
   public initExceptionFilters() {
-    this.expressApp.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
+    this.expressApp.use(
+      (err: Error, req: Request, res: Response, next: NextFunction) =>
+        this.exceptionFilter.catch(err, req, res, next)
+    );
   }
 
   public initRoutes() {

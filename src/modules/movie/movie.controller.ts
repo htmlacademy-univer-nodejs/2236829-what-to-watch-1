@@ -161,7 +161,7 @@ export default class MovieController extends Controller {
     if (existingMovie?.user?.id !== req.user.id) {
       throw new HttpError(
         StatusCodes.FORBIDDEN,
-        `Фильм не принадлежит текущему пользователю`,
+        'Фильм не принадлежит текущему пользователю',
         'MovieController',
       );
     }
@@ -178,7 +178,7 @@ export default class MovieController extends Controller {
     if (existingMovie?.user?.id !== req.user.id) {
       throw new HttpError(
         StatusCodes.FORBIDDEN,
-        `Фильм не принадлежит текущему пользователю`,
+        'Фильм не принадлежит текущему пользователю',
         'MovieController',
       );
     }

@@ -71,7 +71,7 @@ export default class WatchLaterController extends Controller {
     res: Response<Record<string, unknown>>
   ): Promise<void> {
     const movieExists = await this.movieService.exists(req.body.movieId);
-    if (movieExists) {
+    if (!movieExists) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         'Фильм не найден',
@@ -87,7 +87,7 @@ export default class WatchLaterController extends Controller {
     res: Response<Record<string, unknown>>
   ): Promise<void> {
     const movieExists = await this.movieService.exists(req.body.movieId);
-    if (movieExists) {
+    if (!movieExists) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         'Фильм не найден',
